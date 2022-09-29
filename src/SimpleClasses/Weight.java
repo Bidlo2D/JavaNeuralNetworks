@@ -1,6 +1,6 @@
 package SimpleClasses;
 
-public class Weights {
+public class Weight {
     // Data
     private double[][] matrix;
 
@@ -8,12 +8,12 @@ public class Weights {
     public int n; public int m;
 
     // Constructors
-    public Weights(int n, int m)
+    public Weight(int n, int m)
     {
         this.n = n; this.m = m;
         matrix = new double[n][m];
     }
-    public Weights(double[][] matrix)
+    public Weight(double[][] matrix)
     {
         n = matrix.length; m = matrix[0].length;
         this.matrix= matrix;
