@@ -1,9 +1,18 @@
+import Collector.Initializations.Generation;
+import Collector.Network;
+import Layers.Activation.TypeActivation;
+import Layers.FCHLayer;
 import SimpleClasses.Signal;
 
 public class Main {
     public static void main (String[] args){
-        Signal signal = new Signal(2,3,5);
-        signal.setSignal(0,0,0, 0.335);
-        System.out.println(signal.getSignal(0,0,0));
+        Network net = new Network();
+        FCHLayer layer1 = new FCHLayer(2, TypeActivation.Input);
+        FCHLayer layer2 = new FCHLayer(2, TypeActivation.Input);
+        net.AddLayer(layer1);
+        net.AddLayer(layer2);
+        Signal test = Generation.RandomSignal(3,2,2,0);
+        layer1.Forward(test);
+        System.out.println("");
     }
 }
