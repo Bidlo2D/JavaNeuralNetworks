@@ -15,6 +15,7 @@ public class Signal {
           neurons[x * DW() + y * sizeZ + z].setValue(value);
      }
      // Constructors
+     public Signal(){}
      public Signal(int z, int x, int y){
           this.sizeZ = z; this.sizeX = x; this.sizeY = y;
           neurons = new Neuron[z * x * y];

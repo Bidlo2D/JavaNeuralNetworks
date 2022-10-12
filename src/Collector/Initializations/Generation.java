@@ -1,5 +1,6 @@
 package Collector.Initializations;
 
+import SimpleClasses.Batch;
 import SimpleClasses.Signal;
 import SimpleClasses.Weight;
 
@@ -22,6 +23,11 @@ public class Generation {
             }
         }
         return image;
+    }
+    public static Batch RandomBatch(int sizeMini, int sizeBatch)
+    {
+
+        return null;
     }
     public static Weight RandomWeight(int sizeZ, int sizeX)
     {
