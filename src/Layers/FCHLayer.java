@@ -20,13 +20,17 @@ public class FCHLayer extends Layer {
     @Override
     public Signal Forward(Signal input) {
         this.input = input;
-        if(weights == null || biases == null){ Initialization(); }
-        for (int w1 = 0; w1 < weights.m; w1++)
+        if(weights == null ||
+           biases == null ||
+           corrections == null ||
+           output == null) { Initialization(); }
+
+        for (int w1 = 0; w1 < weights.n; w1++)
         {
             double Sum = biases.getSignal(w1, 0, 0);
-            for (int w2 = 0; w2 < weights.n; w2++)
+            for (int w2 = 0; w2 < weights.m; w2++)
             {
-                Sum += input.getSignal(w2, 0, 0) * weights.getWeight(w2, w1);
+                Sum += input.getSignal(w2, 0, 0) * weights.getWeight(w1, w2);
             }
             double result = ActivationFunctions.Activation(typeActivation, Sum, input, output, w1);
             output.setSignal(w1,0,0, result);
@@ -36,31 +40,31 @@ public class FCHLayer extends Layer {
 
     @Override
     public Signal BackPropagation(Signal delta, int Right, double E, double A) {
-        Signal deltaOutput = new Signal(output.sizeZ, output.sizeX, output.sizeY);
-        for (int i = 0; i < weights.m; i++)
+        Signal deltaOutput = new Signal(input.sizeZ, input.sizeX, input.sizeY);
+        for (int i = 0; i < weights.n; i++)
         {
             double df = 0;
-            for (int j = 0; j < weights.n; j++)
+            for (int j = 0; j < weights.m; j++)
             {
-                double dout = DeactivationFunctions.Deactivation(typeActivation, output.getSignal(j, 0, 0), output); //производная функции активации
-                df += dout * delta.getSignal(i, 0, 0); //градиент для смещений
-                double gradient = (dout * (weights.getWeight(j, i) * delta.getSignal(i, 0, 0))) + deltaOutput.getSignal(j, 0, 0);
-                deltaOutput.setSignal(j, 0, 0, gradient); //Градиент для следующего слоя
-                double GRADw = output.getSignal(j, 0, 0) * delta.getSignal(i, 0, 0); //Градиент данного слоя
-                double gradientNext = E * GRADw + A * corrections.getSignal(j, 0, 0);
-                corrections.setSignal(j, 0, 0, gradientNext); //Посчет обновления весов по градиенту и коф.обучения
-                weights.setWeight(j, i, weights.getWeight(j, i) + corrections.getSignal(j, 0, 0)); //Обновление весов
+                double dout = DeactivationFunctions.Deactivation(typeActivation, input.getSignal(j, 0, 0), input);
+                df += dout * delta.getSignal(i, 0, 0);
+                double gradient = (dout * (weights.getWeight(i, j) * delta.getSignal(i, 0, 0))) + deltaOutput.getSignal(j, 0, 0);
+                deltaOutput.setSignal(j, 0, 0, gradient);
+                double GRADw = input.getSignal(j, 0, 0) * delta.getSignal(i, 0, 0);
+                double gradientNext = E * GRADw + A * corrections.getSignal(i, 0, 0);
+                corrections.setSignal(i, 0, 0, gradientNext);
+                weights.setWeight(i, j, weights.getWeight(i, j) + corrections.getSignal(i, 0, 0));
+                biases.setSignal(i, 0, 0, (df * E) + biases.getSignal(i, 0, 0));
             }
-            biases.setSignal(i, 0, 0, (df * E) + biases.getSignal(i, 0, 0)); //Обновление смещений
         }
         return deltaOutput;
     }
 
     protected void Initialization(){
         int sizeZ = input.fullSize();
-        output = new Signal(sizeZ, 1, 1);
-        corrections = new Signal(sizeZ, 1,1);
-        biases = Generation.RandomSignal(sizeZ, 1 , 1 , 0);
-        weights = Generation.RandomWeight(sizeZ, countNeurons);
+        output = new Signal(countNeurons, 1, 1);
+        corrections = new Signal(countNeurons, 1,1);
+        biases = Generation.RandomSignal(countNeurons, 1 , 1 , 0);
+        weights = Generation.RandomWeight(countNeurons, sizeZ);
     }
 }

@@ -1,6 +1,6 @@
 package Collector.Initializations;
 
-import SimpleClasses.Batch;
+import SimpleClasses.Dates.Batch;
 import SimpleClasses.Signal;
 import SimpleClasses.Weight;
 
@@ -10,7 +10,7 @@ public class Generation {
     private static Random rnd = new Random();
     public static Signal RandomSignal(int sizeZ, int sizeX, int sizeY, int right)
     {
-        Signal image = new Signal(sizeZ, sizeX, sizeY);
+        Signal image = new Signal(sizeZ, sizeX, sizeY, right);
         for (int z = 0; z < image.sizeZ; z++)
         {
             for (int x = 0; x < image.sizeX; x++)
