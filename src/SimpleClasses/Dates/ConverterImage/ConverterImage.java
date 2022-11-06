@@ -1,6 +1,5 @@
 package SimpleClasses.Dates.ConverterImage;
 
-import SimpleClasses.Dates.ConverterImage.Exceptions.InvalidFormatNameFileException;
 import SimpleClasses.Dates.ConverterImage.Exceptions.NoDirectoryException;
 import SimpleClasses.Dates.FormatImages;
 import SimpleClasses.Signal;
@@ -11,7 +10,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 public class ConverterImage {
     public List<Signal> dates = new ArrayList();
@@ -45,7 +43,7 @@ public class ConverterImage {
                     var color = getPixelData(img, x, y);
                     for(int z = 0; z < color.length; z++) {
                         var value = (double)color[z] / 255;
-                        imgSignal.setSignal(z, x, y, value);
+                        imgSignal.setValueSignal(z, x, y, value);
                     }
                 }
             }

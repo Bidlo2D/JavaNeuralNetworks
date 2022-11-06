@@ -1,16 +1,14 @@
 package Layers;
 
 import Collector.Initializations.Generation;
-import Layers.Activation.ActivationFunctions;
-import Layers.Activation.DeactivationFunctions;
-import Layers.Activation.TypeActivation;
+import Layers.Activation.Functions.IFunction;
+import Layers.Activation.Functions.Softmax;
 import SimpleClasses.Signal;
 
 public class FCCLayer extends FCHLayer {
-    //private double[] Error;
     private double loss = 0;
 
-    public FCCLayer(int countNeurons, TypeActivation typeActivation) {
+    public FCCLayer(int countNeurons, IFunction typeActivation) {
         super(countNeurons, typeActivation);
     }
     @Override
@@ -22,15 +20,15 @@ public class FCCLayer extends FCHLayer {
         {
             if (i == Right)
             {
-                error = 1 - output.getSignal(i, 0, 0); //Подсчет ошибки(Положительный)
-                double dout = error * DeactivationFunctions.Deactivation(typeActivation, output.getSignal(i, 0, 0), output);
-                deltaOutput.setSignal(i, 0, 0, dout);
+                error = 1 - output.getValueSignal(i, 0, 0); //Подсчет ошибки(Положительный)
+                double dout = error * typeActivation.Derivative(output.getSignal(i, 0, 0));
+                deltaOutput.setValueSignal(i, 0, 0, dout);
             }
             else
             {
-                error = 0 - output.getSignal(i, 0, 0); //Подсчет ошибки(Отрицательный)
-                double dout = error * DeactivationFunctions.Deactivation(typeActivation, output.getSignal(i, 0, 0), output);
-                deltaOutput.setSignal(i, 0, 0, dout);
+                error = 0 - output.getValueSignal(i, 0, 0); //Подсчет ошибки(Отрицательный)
+                double dout = error * typeActivation.Derivative(output.getSignal(i, 0, 0));
+                deltaOutput.setValueSignal(i, 0, 0, dout);
             }
             loss += Math.pow(error, 2);
         }
@@ -44,8 +42,12 @@ public class FCCLayer extends FCHLayer {
     protected void Initialization(){
         int sizeZ = input.fullSize();
         output = new Signal(countNeurons, 1, 1);
-        corrections = new Signal(countNeurons, 1,1);
-        biases = Generation.RandomSignal(countNeurons, 1 , 1 , 0);
-        weights = Generation.RandomWeight(countNeurons, sizeZ);
+        if(typeActivation.getClass().getSimpleName().equals("Softmax")){
+            Softmax castedDog = (Softmax) typeActivation;
+            castedDog.output = output;
+        }
+        corrections = new Signal(sizeZ, 1,1);
+        biases = Generation.RandomSignal(sizeZ, 1 , 1 , 0, 0, 0.1);
+        weights = Generation.RandomWeight(countNeurons, sizeZ, -1, 1);
     }
 }

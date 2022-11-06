@@ -8,25 +8,36 @@ public class Signal {
      // Data
      private Neuron[] neurons;
      // Sizes
-     public int sizeZ, sizeX, sizeY, right;
+     public int sizeZ = 0, sizeX = 0, sizeY = 0, right = 0;
      public int DW () { return sizeZ * sizeX; }
      public int fullSize () {  return sizeZ * sizeX * sizeY; }
      //public int
      public Map<Integer, Double> getAnswer()
      {
           var max = Arrays.stream(neurons).max(Neuron::compare).get();
-          var index = Arrays.asList(neurons).indexOf(max);
+          var index = IndexOf(max);
           var value = max.getValue();
           Map<Integer, Double> answer = new HashMap<>();
           answer.put(index, value);
           return answer;
      }
      // Indexer
-     public double getSignal(int z, int x, int y){
+     public double getValueSignal(int z, int x, int y){
           return neurons[x * DW() + y * sizeZ + z].getValue();
      }
-     public void setSignal(int z, int x, int y, double value){
+     public void setValueSignal(int z, int x, int y, double value){
           neurons[x * DW() + y * sizeZ + z].setValue(value);
+     }
+     // Values
+     public Neuron getSignal(int z, int x, int y){
+          return neurons[x * DW() + y * sizeZ + z];
+     }
+     public void setSignal(int z, int x, int y, Neuron value){
+          neurons[x * DW() + y * sizeZ + z] = value;
+     }
+     //IndexOf
+     public int IndexOf(Neuron x){
+          return Arrays.asList(neurons).indexOf(x);
      }
      // Constructors
      public Signal(){}
@@ -47,6 +58,5 @@ public class Signal {
                neurons[i] = new Neuron();
           }
      }
-
 }
 

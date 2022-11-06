@@ -1,9 +1,9 @@
 package Layers;
 
 import Collector.Initializations.Generation;
-import Layers.Activation.ActivationFunctions;
-import Layers.Activation.DeactivationFunctions;
-import Layers.Activation.TypeActivation;
+import Layers.Activation.Functions.IFunction;
+import Layers.Activation.Functions.Softmax;
+import SimpleClasses.Neuron;
 import SimpleClasses.Signal;
 import SimpleClasses.Weight;
 
@@ -12,7 +12,7 @@ public class FCHLayer extends Layer {
     protected Signal biases;
     protected Signal corrections;
     public int countNeurons;
-    public FCHLayer(int countNeurons, TypeActivation typeActivation){
+    public FCHLayer(int countNeurons, IFunction typeActivation){
         this.countNeurons = countNeurons;
         this.typeActivation = typeActivation;
     }
@@ -24,18 +24,28 @@ public class FCHLayer extends Layer {
            biases == null ||
            corrections == null ||
            output == null) { Initialization(); }
-
         for (int w1 = 0; w1 < weights.n; w1++)
         {
-            double Sum = biases.getSignal(w1, 0, 0);
+            Neuron Sum = new Neuron();
+            Sum.setValue(biases.getValueSignal(w1, 0, 0));
             for (int w2 = 0; w2 < weights.m; w2++)
             {
-                Sum += input.getSignal(w2, 0, 0) * weights.getWeight(w1, w2);
+                double plus = input.getValueSignal(w2, 0, 0) * weights.getWeight(w1, w2);
+                Sum.setValue(Sum.getValue() + plus);
             }
-            double result = ActivationFunctions.Activation(typeActivation, Sum, input, output, w1);
-            output.setSignal(w1,0,0, result);
+
+            output.setSignal(w1, 0, 0, Sum);
         }
+        Activation();
         return output;
+    }
+
+    private void Activation() {
+        for (int i = 0; i < output.fullSize(); i++)
+        {
+            double result = typeActivation.Activation(output.getSignal(i, 0, 0));
+            output.setValueSignal(i, 0, 0, result);
+        }
     }
 
     @Override
@@ -46,16 +56,16 @@ public class FCHLayer extends Layer {
             double df = 0;
             for (int j = 0; j < weights.m; j++)
             {
-                double dout = DeactivationFunctions.Deactivation(typeActivation, input.getSignal(j, 0, 0), input);
-                df += dout * delta.getSignal(i, 0, 0);
-                double gradient = (dout * (weights.getWeight(i, j) * delta.getSignal(i, 0, 0))) + deltaOutput.getSignal(j, 0, 0);
-                deltaOutput.setSignal(j, 0, 0, gradient);
-                double GRADw = input.getSignal(j, 0, 0) * delta.getSignal(i, 0, 0);
-                double gradientNext = E * GRADw + A * corrections.getSignal(i, 0, 0);
-                corrections.setSignal(i, 0, 0, gradientNext);
-                weights.setWeight(i, j, weights.getWeight(i, j) + corrections.getSignal(i, 0, 0));
-                biases.setSignal(i, 0, 0, (df * E) + biases.getSignal(i, 0, 0));
+                double dout = typeActivation.Derivative(input.getSignal(j, 0, 0));
+                df += dout * delta.getValueSignal(i, 0, 0);
+                double gradient = (dout * (weights.getWeight(i, j) * delta.getValueSignal(i, 0, 0)));
+                deltaOutput.setValueSignal(j, 0, 0, gradient + deltaOutput.getValueSignal(j, 0, 0));
+                double GRADw = input.getValueSignal(j, 0, 0) * delta.getValueSignal(i, 0, 0);
+                double gradientNext = E * GRADw + A * corrections.getValueSignal(i, 0, 0);
+                corrections.setValueSignal(i, 0, 0, gradientNext);
+                weights.setWeight(i, j, weights.getWeight(i, j) + corrections.getValueSignal(i, 0, 0));
             }
+            biases.setValueSignal(i, 0, 0, (df * E) + biases.getValueSignal(i, 0, 0));
         }
         return deltaOutput;
     }
@@ -63,8 +73,12 @@ public class FCHLayer extends Layer {
     protected void Initialization(){
         int sizeZ = input.fullSize();
         output = new Signal(countNeurons, 1, 1);
+        if(typeActivation.getClass().getSimpleName().equals("Softmax")){
+            Softmax castedDog = (Softmax) typeActivation;
+            castedDog.output = output;
+        }
         corrections = new Signal(countNeurons, 1,1);
-        biases = Generation.RandomSignal(countNeurons, 1 , 1 , 0);
-        weights = Generation.RandomWeight(countNeurons, sizeZ);
+        biases = Generation.RandomSignal(countNeurons, 1 , 1 , 0, 0, 0.1);
+        weights = Generation.RandomWeight(countNeurons, sizeZ, -1, 1);
     }
 }

@@ -13,6 +13,7 @@ import java.util.List;
 public class Batch {
     public List<MiniBatch> miniBatches = new ArrayList();
 
+    public Batch(){}
     // Images to signals
     public Batch(List<Signal> dates, int sizeMini) {
         int countMini = dates.size() / sizeMini;
