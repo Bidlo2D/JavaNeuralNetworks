@@ -49,7 +49,7 @@ public class Network {
     private void BackPropagationLayers(int Right) {
         Signal delta = new Signal();
         for(int l = NeuralNetwork.size() - 1; l >= 0; l--) {
-            delta = NeuralNetwork.get(l).BackPropagation(delta, Right, L_rate,A_rate);
+            delta = NeuralNetwork.get(l).BackPropagation(delta, Right, L_rate, A_rate);
         }
     }
 }

@@ -1,8 +1,9 @@
-package Layers;
+package Layers.FullyLayers;
 
 import Collector.Initializations.Generation;
 import Layers.Activation.Functions.IFunction;
 import Layers.Activation.Functions.Softmax;
+import Layers.Layer;
 import SimpleClasses.Neuron;
 import SimpleClasses.Signal;
 import SimpleClasses.Weight;

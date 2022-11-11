@@ -1,4 +1,4 @@
-package Layers;
+package Layers.FullyLayers;
 
 import Collector.Initializations.Generation;
 import Layers.Activation.Functions.IFunction;
