@@ -1,17 +1,28 @@
 package SimpleClasses;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Signal {
+public class Signal implements Serializable {
      // Data
      private Neuron[] neurons;
      // Sizes
      public int sizeZ = 0, sizeX = 0, sizeY = 0, right = 0;
      public int DW () { return sizeZ * sizeX; }
      public int fullSize () {  return sizeZ * sizeX * sizeY; }
-     //public int
+     // Max and Min
+     public Double Max()
+     {
+          return Arrays.stream(neurons).max(Neuron::compare).get().getValue();
+     }
+
+     public Double Min()
+     {
+          return Arrays.stream(neurons).min(Neuron::compare).get().getValue();
+     }
+     // Answer
      public Map<Integer, Double> getAnswer()
      {
           var max = Arrays.stream(neurons).max(Neuron::compare).get();

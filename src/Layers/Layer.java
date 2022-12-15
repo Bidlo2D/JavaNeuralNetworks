@@ -1,12 +1,14 @@
 package Layers;
 
-import Layers.Activation.Functions.IFunction;
+import Layers.Activation.Functions.Function;
 import SimpleClasses.Signal;
 
-public abstract class Layer {
+import java.io.Serializable;
+
+public abstract class Layer implements Serializable {
     protected Signal output;
     protected Signal input;
-    protected IFunction typeActivation;
+    protected Function typeActivation;
     public abstract Signal Forward(Signal input);
     public abstract Signal BackPropagation(Signal delta, int Right, double E, double A);
 }

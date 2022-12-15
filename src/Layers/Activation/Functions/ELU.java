@@ -2,7 +2,7 @@ package Layers.Activation.Functions;
 
 import SimpleClasses.Neuron;
 
-public class ELU implements IFunction{
+public class ELU extends Function {
     private final double alpha = 0.13;
     @Override
     public double Activation(Neuron x) {

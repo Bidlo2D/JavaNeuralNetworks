@@ -1,15 +1,10 @@
 package Layers.ConvLayers;
 
 import Collector.Initializations.Generation;
-import Collector.Network;
-import Layers.Activation.Functions.IFunction;
+import Layers.Activation.Functions.Function;
 import Layers.Layer;
 import SimpleClasses.Neuron;
 import SimpleClasses.Signal;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class ConvolutionLayer extends Layer {
     private int stride = 0, matrix = 0, channel = 0, countCore = 0, sizeCX = 0, sizeCY, ratioPadding = 0;
@@ -18,12 +13,11 @@ public class ConvolutionLayer extends Layer {
     private Signal db; //  градиенты смещений
     private Signal bias; // смещений
 
-    public ConvolutionLayer(int matrix, int countCore, int stride, int ratioPadding, IFunction typeActivation){
+    public ConvolutionLayer(int matrix, int countCore, int stride, int ratioPadding){
         this.countCore = countCore;
         this.stride = stride;
         this.matrix = matrix;
         this.ratioPadding = ratioPadding;
-        this.typeActivation = typeActivation;
     }
 
     @Override
@@ -56,8 +50,7 @@ public class ConvolutionLayer extends Layer {
                                 sum += input.getValueSignal(c, i0, j0) * cores[f].getValueSignal(c, i, j);
                         }
                     }
-                    Neuron sumN = new Neuron(sum);
-                    output.setValueSignal(f, y, x, typeActivation.Activation(sumN)); // записываем результат свёртки в выходной тензор
+                    output.setValueSignal(f, y, x, sum); // записываем результат свёртки в выходной тензор
                 }
             }
         }
@@ -133,8 +126,7 @@ public class ConvolutionLayer extends Layer {
                                         * deltas.getValueSignal(f, i0, j0); // добавляем произведение повёрнутых фильтров на дельты
                         }
                     }
-                    Neuron sumN = new Neuron(sum);
-                    deltaOutput.setValueSignal(c, y, x, typeActivation.Derivative(sumN)); // записываем результат в тензор градиента
+                    deltaOutput.setValueSignal(c, y, x, sum); // записываем результат в тензор градиента
                 }
             }
         }

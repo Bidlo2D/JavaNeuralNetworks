@@ -2,7 +2,7 @@ package Layers.Activation.Functions;
 
 import SimpleClasses.Neuron;
 
-public class Tangent implements IFunction{
+public class Tangent extends Function {
     @Override
     public double Activation(Neuron x) {
         return 2 / (1 + Math.exp(x.getValue())) - 1;

@@ -3,6 +3,8 @@ package Layers.ConvLayers;
 import Layers.Layer;
 import SimpleClasses.Signal;
 
+import java.io.Serializable;
+
 public class PoolingLayer extends Layer {
     private Signal mask;
     private int scale = 2;
@@ -23,15 +25,23 @@ public class PoolingLayer extends Layer {
                     // проходимся по подматрице и ищем максимум и его координаты
                     for (int y = i; y < i + scale; y++) {
                         for (int x = j; x < j + scale; x++) {
+                            if (x< 0 || x >= input.sizeX || y < 0 || y >= input.sizeY)
+                                continue;
                             double value = input.getValueSignal(d, y, x); // получаем значение входного тензора
+                            mask.setValueSignal(d, imax, jmax, 0);
 
                             // если очередное значение больше максимального
-                            if (value > max)
+                            if (value > max){
                                 max = value; // обновляем максимум
+                                imax = y; // обновляем индекс строки максимума
+                                jmax = x; // обновляем индекс столбца максимума
+                            }
                         }
                     }
-
-                    output.setValueSignal(d, i / scale, j / scale, max); // записываем в выходной тензор найденный максимум
+                    int x = i / scale; int y = j / scale;
+                    if (x< 0 || x >= output.sizeX || y < 0 || y >= output.sizeY)
+                        continue;
+                    output.setValueSignal(d, x, y, max); // записываем в выходной тензор найденный максимум
                     mask.setValueSignal(d, imax, jmax, 1); // записываем 1 в маску в месте расположения максимального элемента
                 }
             }
@@ -47,6 +57,8 @@ public class PoolingLayer extends Layer {
         for (int d = 0; d < input.sizeZ; d++)
             for (int i = 0; i < input.sizeX; i++)
                 for (int j = 0; j < input.sizeY; j++){
+                    if (i< 0 || i >= delta.sizeX || j < 0 || j >= delta.sizeY)
+                        continue;
                     double value = delta.getValueSignal(d, i / scale, j / scale) * mask.getValueSignal(d, i, j);
                     deltaOutput.setValueSignal(d, i, j, value);
                 }

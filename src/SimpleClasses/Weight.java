@@ -1,6 +1,8 @@
 package SimpleClasses;
 
-public class Weight {
+import java.io.Serializable;
+
+public class Weight implements Serializable {
     // Data
     private double[][] matrix;
 

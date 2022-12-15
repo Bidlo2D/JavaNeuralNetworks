@@ -1,16 +1,12 @@
 package SimpleClasses.Dates;
 
-import SimpleClasses.Dates.ConverterImage.ConverterImage;
 import SimpleClasses.Signal;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Batch {
+public class Batch implements Serializable  {
     public List<MiniBatch> miniBatches = new ArrayList();
 
     public Batch(){}

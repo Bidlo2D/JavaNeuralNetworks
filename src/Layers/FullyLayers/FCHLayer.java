@@ -1,7 +1,7 @@
 package Layers.FullyLayers;
 
 import Collector.Initializations.Generation;
-import Layers.Activation.Functions.IFunction;
+import Layers.Activation.Functions.Function;
 import Layers.Activation.Functions.Softmax;
 import Layers.Layer;
 import SimpleClasses.Neuron;
@@ -13,7 +13,7 @@ public class FCHLayer extends Layer {
     protected Signal biases;
     protected Signal corrections;
     public int countNeurons;
-    public FCHLayer(int countNeurons, IFunction typeActivation){
+    public FCHLayer(int countNeurons, Function typeActivation){
         this.countNeurons = countNeurons;
         this.typeActivation = typeActivation;
     }

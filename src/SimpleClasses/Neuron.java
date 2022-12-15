@@ -1,8 +1,9 @@
 package SimpleClasses;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
-public class Neuron {
+public class Neuron implements Serializable {
     private double value;
 
     public void setValue(double value) {

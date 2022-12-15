@@ -1,6 +1,7 @@
-package SimpleClasses.Dates.ConverterImage;
+package SimpleClasses.Dates.Converters;
 
-import SimpleClasses.Dates.ConverterImage.Exceptions.NoDirectoryException;
+import SimpleClasses.Dates.Converters.Exceptions.NoDirectoryException;
+import SimpleClasses.Dates.Converters.Exceptions.Normalization;
 import SimpleClasses.Dates.FormatImages;
 import SimpleClasses.Signal;
 
@@ -15,8 +16,8 @@ public class ConverterImage {
     public List<Signal> dates = new ArrayList();
     // Pattern pattern = Pattern.compile("А.+а"); TODO: pattern format file
 
-    public ConverterImage(String path) throws NoDirectoryException {
-        File dir = new File(path);
+    public ConverterImage(String pathDir) throws NoDirectoryException {
+        File dir = new File(pathDir);
         if (!dir.isDirectory()) {
             throw new NoDirectoryException("Путь не является директорией!");
         }
@@ -42,7 +43,7 @@ public class ConverterImage {
                 for(int y = 0; y < img.getWidth(); y++) {
                     var color = getPixelData(img, x, y);
                     for(int z = 0; z < color.length; z++) {
-                        var value = (double)color[z] / 255;
+                        var value = Normalization.ZeroToOne((double) color[z], 0.0, 255.0);
                         imgSignal.setValueSignal(z, x, y, value);
                     }
                 }

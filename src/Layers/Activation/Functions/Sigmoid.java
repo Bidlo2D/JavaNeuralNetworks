@@ -2,7 +2,7 @@ package Layers.Activation.Functions;
 
 import SimpleClasses.Neuron;
 
-public class Sigmoid implements IFunction{
+public class Sigmoid extends Function {
     @Override
     public double Activation(Neuron x) {
         return 1 / (1 + Math.exp(-x.getValue()));

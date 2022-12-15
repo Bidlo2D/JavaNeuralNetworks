@@ -1,14 +1,14 @@
 package Layers.FullyLayers;
 
 import Collector.Initializations.Generation;
-import Layers.Activation.Functions.IFunction;
+import Layers.Activation.Functions.Function;
 import Layers.Activation.Functions.Softmax;
 import SimpleClasses.Signal;
 
 public class FCCLayer extends FCHLayer {
     private double loss = 0;
 
-    public FCCLayer(int countNeurons, IFunction typeActivation) {
+    public FCCLayer(int countNeurons, Function typeActivation) {
         super(countNeurons, typeActivation);
     }
     @Override

@@ -3,7 +3,7 @@ package Layers.Activation.Functions;
 import SimpleClasses.Neuron;
 import SimpleClasses.Signal;
 
-public class Softmax implements IFunction{
+public class Softmax extends Function {
     public Signal output = null;
 
     @Override

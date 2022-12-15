@@ -2,7 +2,7 @@ package Layers.Activation.Functions;
 
 import SimpleClasses.Neuron;
 
-public class ReLU implements IFunction{
+public class ReLU extends Function {
     @Override
     public double Activation(Neuron x) {
         if (x.getValue() <= 0) { return 0; }
