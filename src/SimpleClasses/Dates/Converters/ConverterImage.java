@@ -1,7 +1,8 @@
 package SimpleClasses.Dates.Converters;
 
+import SimpleClasses.Dates.Converters.Enums.RangeNorm;
+import SimpleClasses.Dates.Converters.Enums.TypeImage;
 import SimpleClasses.Dates.Converters.Exceptions.NoDirectoryException;
-import SimpleClasses.Dates.Converters.Exceptions.Normalization;
 import SimpleClasses.Dates.FormatImages;
 import SimpleClasses.Signal;
 
@@ -14,9 +15,13 @@ import java.util.List;
 
 public class ConverterImage {
     public List<Signal> dates = new ArrayList();
+    private RangeNorm range;
+    private TypeImage type;
     // Pattern pattern = Pattern.compile("А.+а"); TODO: pattern format file
 
-    public ConverterImage(String pathDir) throws NoDirectoryException {
+    public ConverterImage(String pathDir, TypeImage type, RangeNorm range) throws NoDirectoryException {
+        this.range = range;
+        this.type = type;
         File dir = new File(pathDir);
         if (!dir.isDirectory()) {
             throw new NoDirectoryException("Путь не является директорией!");
@@ -38,16 +43,16 @@ public class ConverterImage {
 
             //}
             int answer = Integer.parseInt(name.split("\\.")[0].split(" - ")[1]);
-            Signal imgSignal = new Signal(3, img.getHeight(), img.getWidth(), answer);
+            Signal imgSignal = new Signal(type.getChannel(), img.getHeight(), img.getWidth(), answer);
             for(int x = 0; x < img.getHeight(); x++) {
                 for(int y = 0; y < img.getWidth(); y++) {
                     var color = getPixelData(img, x, y);
                     for(int z = 0; z < color.length; z++) {
-                        var value = Normalization.ZeroToOne((double) color[z], 0.0, 255.0);
-                        imgSignal.setValueSignal(z, x, y, value);
+                        imgSignal.setValueSignal(z, x, y, color[z]);
                     }
                 }
             }
+            Normalization.NormalSignal(imgSignal, range);
             return imgSignal;
         } catch (IOException e) {
             return null;
@@ -57,12 +62,19 @@ public class ConverterImage {
     private int[] getPixelData(BufferedImage img, int x, int y) {
         int argb = img.getRGB(x, y);
 
-        int rgb[] = new int[]{
-                (argb >> 16) & 0xff, //red
-                (argb >> 8) & 0xff, //green
-                (argb) & 0xff  //blue
-        };
-        return rgb;
+        switch (type){
+            case Color:
+                return new int[]{
+                        (argb >> 16) & 0xff, //red
+                        (argb >> 8) & 0xff, //green
+                        (argb) & 0xff  //blue
+                };
+            case BW:
+                return new int[]{
+                        (argb) & 0xff // gray
+                };
+        }
+        return null;
     }
 
     private boolean isImage(File file) {

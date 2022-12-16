@@ -13,12 +13,12 @@ public class Signal implements Serializable {
      public int DW () { return sizeZ * sizeX; }
      public int fullSize () {  return sizeZ * sizeX * sizeY; }
      // Max and Min
-     public Double Max()
+     public double Max()
      {
           return Arrays.stream(neurons).max(Neuron::compare).get().getValue();
      }
 
-     public Double Min()
+     public double Min()
      {
           return Arrays.stream(neurons).min(Neuron::compare).get().getValue();
      }

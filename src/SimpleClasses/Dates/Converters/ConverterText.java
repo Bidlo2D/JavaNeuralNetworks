@@ -1,9 +1,9 @@
 package SimpleClasses.Dates.Converters;
 
 import SimpleClasses.Dates.Converters.Enums.FormatText;
+import SimpleClasses.Dates.Converters.Enums.RangeNorm;
 import SimpleClasses.Dates.Converters.Enums.TokenType;
 import SimpleClasses.Dates.Converters.Exceptions.NoDirectoryException;
-import SimpleClasses.Dates.Converters.Exceptions.Normalization;
 import SimpleClasses.Signal;
 
 import java.io.File;
@@ -11,12 +11,13 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public class ConverterText {
     public List<Signal> dates = new ArrayList();
     private TokenType type;
-    public ConverterText(String pathDir, TokenType type) throws NoDirectoryException {
+    private RangeNorm range;
+    public ConverterText(String pathDir, TokenType type, RangeNorm range) throws NoDirectoryException {
+        this.range = range;
         this.type = type;
         File dir = new File(pathDir);
         if (!dir.isDirectory()) {
@@ -71,7 +72,7 @@ public class ConverterText {
             }
             signal.setValueSignal(i,0,0, s); i++;
         }
-        Normalization.ZeroToOne(signal);
+        Normalization.NormalSignal(signal, range);
         return signal;
     }
     private Signal addTokenWord(String str, int answer) {
@@ -87,7 +88,7 @@ public class ConverterText {
             }
             signal.setValueSignal(i,0,0, s); i++;
         }
-        Normalization.ZeroToOne(signal);
+        Normalization.NormalSignal(signal, range);
         return signal;
     }
     private Signal addTokenProposal(String str, int answer) {
@@ -103,7 +104,7 @@ public class ConverterText {
             }
             signal.setValueSignal(i,0,0, s); i++;
         }
-        Normalization.ZeroToOne(signal);
+        Normalization.NormalSignal(signal, range);
         return signal;
     }
 

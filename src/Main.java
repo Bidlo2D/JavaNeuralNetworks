@@ -7,34 +7,43 @@ import Layers.FullyLayers.FCHLayer;
 import SimpleClasses.Dates.Batch;
 import SimpleClasses.Dates.Converters.ConverterImage;
 import SimpleClasses.Dates.Converters.ConverterText;
+import SimpleClasses.Dates.Converters.Enums.RangeNorm;
 import SimpleClasses.Dates.Converters.Enums.TokenType;
+import SimpleClasses.Dates.Converters.Enums.TypeImage;
 import SimpleClasses.Dates.Converters.Exceptions.NoDirectoryException;
-import SimpleClasses.Dates.Converters.Exceptions.Normalization;
+import SimpleClasses.Dates.Converters.Normalization;
 import SimpleClasses.Dates.MiniBatch;
 import SimpleClasses.Signal;
 
 import java.io.*;
-import java.sql.Array;
 import java.text.DecimalFormat;
 import java.util.*;
 
 public class Main {
     public static void main (String[] args) throws NoDirectoryException, IOException, ClassNotFoundException {
-        ConverterText data = new ConverterText("C:\\DataLab\\Text", TokenType.Proposal);
+        //"C:\\DataLab\\Text"
+        var path = "C:\\Games\\Programs\\Fonts\\Numbers(32x32) - 2 count";
+        var save = "C:\\Games\\Programs\\Fonts\\SaveNet\\save.bin";
+        ConverterImage data = new ConverterImage(path, TypeImage.BW, new RangeNorm(1.0, -1.0));
+        var net = Load(save);
+        var batch = new Batch(data.dates, 10);
+        //net.Train(batch);
+        var result = net.Test(batch);
+        //Save(net, save);
         System.out.println("END");
     }
 
     private static Network CreateTest() {
-        int classes = 51;
+        int classes = 10;
         Network net = new Network();
 
         ConvolutionLayer cl1 = new ConvolutionLayer(5,16,1, 0);
         PoolingLayer pl1 = new PoolingLayer(2);
         ConvolutionLayer cl2 = new ConvolutionLayer(3,34,3, 0);
         PoolingLayer pl2 = new PoolingLayer(2);
-        FCHLayer layer1 = new FCHLayer(120, new Sigmoid());
-        FCHLayer layer2 = new FCHLayer(80, new Sigmoid());
-        FCHLayer layer3 = new FCHLayer(60, new Sigmoid());
+        FCHLayer layer1 = new FCHLayer(120, new Tangent());
+        FCHLayer layer2 = new FCHLayer(80, new Tangent());
+        FCHLayer layer3 = new FCHLayer(60, new Tangent());
         FCCLayer layer4 = new FCCLayer(classes, new Softmax());
         net.AddLayer(cl1);
         net.AddLayer(pl1);
@@ -44,7 +53,7 @@ public class Main {
         net.AddLayer(layer2);
         net.AddLayer(layer3);
         net.AddLayer(layer4);
-        net.SetEpoth(100);
+        net.SetEpoth(300);
         net.SetLearnRate(0.0925);
         return net;
     }
@@ -112,7 +121,7 @@ public class Main {
                 for(int y = 0;y < input.sizeY; y++) {
                     var value = input.getValueSignal(z, x, y);
                     String result = decimalFormat.format(value);
-                    if(value > 0.0){
+                    if(value >= 0.0){
                         System.out.print(result + " " + ANSI_GREEN);
                     }
                     else { System.out.print(result + " " + ANSI_RED); }
