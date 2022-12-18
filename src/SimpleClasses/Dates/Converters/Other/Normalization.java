@@ -1,13 +1,6 @@
-package SimpleClasses.Dates.Converters;
+package SimpleClasses.Dates.Converters.Other;
 
-import Layers.Activation.Functions.Sigmoid;
-import SimpleClasses.Dates.Converters.Enums.RangeNorm;
-import SimpleClasses.Neuron;
 import SimpleClasses.Signal;
-
-import java.sql.Array;
-import java.util.Collections;
-import java.util.List;
 
 public class Normalization {
 

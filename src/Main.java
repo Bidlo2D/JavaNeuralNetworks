@@ -7,11 +7,11 @@ import Layers.FullyLayers.FCHLayer;
 import SimpleClasses.Dates.Batch;
 import SimpleClasses.Dates.Converters.ConverterImage;
 import SimpleClasses.Dates.Converters.ConverterText;
-import SimpleClasses.Dates.Converters.Enums.RangeNorm;
 import SimpleClasses.Dates.Converters.Enums.TokenType;
+import SimpleClasses.Dates.Converters.Other.PorterStemmer;
+import SimpleClasses.Dates.Converters.Other.RangeNorm;
 import SimpleClasses.Dates.Converters.Enums.TypeImage;
 import SimpleClasses.Dates.Converters.Exceptions.NoDirectoryException;
-import SimpleClasses.Dates.Converters.Normalization;
 import SimpleClasses.Dates.MiniBatch;
 import SimpleClasses.Signal;
 
@@ -21,15 +21,17 @@ import java.util.*;
 
 public class Main {
     public static void main (String[] args) throws NoDirectoryException, IOException, ClassNotFoundException {
-        //"C:\\DataLab\\Text"
-        var path = "C:\\Games\\Programs\\Fonts\\Numbers(32x32) - 2 count";
-        var save = "C:\\Games\\Programs\\Fonts\\SaveNet\\save.bin";
-        ConverterImage data = new ConverterImage(path, TypeImage.BW, new RangeNorm(1.0, -1.0));
-        var net = Load(save);
-        var batch = new Batch(data.dates, 10);
+        //var pathIm = "C:\\Games\\Programs\\Fonts\\Numbers(32x32) - 2 count";
+        //var pathText = "C:\\Games\\Programs\\Fonts\\Texts";
+        //var save = "C:\\Games\\Programs\\Fonts\\SaveNet\\save.bin";
+        //ConverterText data = new ConverterText(pathText, TokenType.Word, new RangeNorm(-1.0, 1.0));
+        //ConverterImage data = new ConverterImage(pathIm, TypeImage.BW, new RangeNorm(-1.0, 1.0));
+        //var net = Load(save);
+        //var batch = new Batch(data.dates, 10);
         //net.Train(batch);
-        var result = net.Test(batch);
+        //var result = net.Test(batch);
         //Save(net, save);
+        //ShowSignal(data.dates.get(0));
         System.out.println("END");
     }
 

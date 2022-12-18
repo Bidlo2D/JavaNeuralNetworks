@@ -1,9 +1,11 @@
 package SimpleClasses.Dates.Converters;
 
 import SimpleClasses.Dates.Converters.Enums.FormatText;
-import SimpleClasses.Dates.Converters.Enums.RangeNorm;
 import SimpleClasses.Dates.Converters.Enums.TokenType;
 import SimpleClasses.Dates.Converters.Exceptions.NoDirectoryException;
+import SimpleClasses.Dates.Converters.Other.Normalization;
+import SimpleClasses.Dates.Converters.Other.PorterStemmer;
+import SimpleClasses.Dates.Converters.Other.RangeNorm;
 import SimpleClasses.Signal;
 
 import java.io.File;
@@ -14,8 +16,10 @@ import java.util.List;
 
 public class ConverterText {
     public List<Signal> dates = new ArrayList();
+    private PorterStemmer porterStemmer = new PorterStemmer();
     private TokenType type;
     private RangeNorm range;
+
     public ConverterText(String pathDir, TokenType type, RangeNorm range) throws NoDirectoryException {
         this.range = range;
         this.type = type;
@@ -77,17 +81,23 @@ public class ConverterText {
     }
     private Signal addTokenWord(String str, int answer) {
         int i = 0;
-        var mass = str.split(" ");
-        Signal signal = new Signal(mass.length,1,1, answer);
-        for (String word : mass) {
+        List<String> listWord = new ArrayList<>();
+        List<Double> tokenWord = new ArrayList<>();
+        String strStemmer = porterStemmer.stemWord(str);
+        String[] words = strStemmer.replaceAll("[^a-zA-Z ]", "").toLowerCase().split("\\s+");
+        for (String word : words) {
             Double s = 0.0;
-            for (String word1 : mass) {
+            if(listWord.contains(word)){ continue; }
+            else{ listWord.add(word); }
+            for (String word1 : words) {
                 if(word.equalsIgnoreCase(word1)){
                     s += 1.0;
                 }
             }
-            signal.setValueSignal(i,0,0, s); i++;
+            tokenWord.add(s);
         }
+        Signal signal = new Signal(tokenWord.size(),1,1, answer);
+        signal.setValueVector(tokenWord);
         Normalization.NormalSignal(signal, range);
         return signal;
     }

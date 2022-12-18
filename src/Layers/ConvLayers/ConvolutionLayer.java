@@ -2,6 +2,7 @@ package Layers.ConvLayers;
 
 import Collector.Initializations.Generation;
 import Layers.Activation.Functions.Function;
+import Layers.Enums.TypeLayer;
 import Layers.Layer;
 import SimpleClasses.Neuron;
 import SimpleClasses.Signal;
@@ -18,6 +19,7 @@ public class ConvolutionLayer extends Layer {
         this.stride = stride;
         this.matrix = matrix;
         this.ratioPadding = ratioPadding;
+        typeLayer = TypeLayer.Input;
     }
 
     @Override

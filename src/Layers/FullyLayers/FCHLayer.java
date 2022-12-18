@@ -3,6 +3,7 @@ package Layers.FullyLayers;
 import Collector.Initializations.Generation;
 import Layers.Activation.Functions.Function;
 import Layers.Activation.Functions.Softmax;
+import Layers.Enums.TypeLayer;
 import Layers.Layer;
 import SimpleClasses.Neuron;
 import SimpleClasses.Signal;
@@ -16,6 +17,7 @@ public class FCHLayer extends Layer {
     public FCHLayer(int countNeurons, Function typeActivation){
         this.countNeurons = countNeurons;
         this.typeActivation = typeActivation;
+        typeLayer = TypeLayer.Hidden;
     }
 
     @Override

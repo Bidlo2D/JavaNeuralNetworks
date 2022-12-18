@@ -1,8 +1,9 @@
 package SimpleClasses.Dates.Converters;
 
-import SimpleClasses.Dates.Converters.Enums.RangeNorm;
 import SimpleClasses.Dates.Converters.Enums.TypeImage;
 import SimpleClasses.Dates.Converters.Exceptions.NoDirectoryException;
+import SimpleClasses.Dates.Converters.Other.Normalization;
+import SimpleClasses.Dates.Converters.Other.RangeNorm;
 import SimpleClasses.Dates.FormatImages;
 import SimpleClasses.Signal;
 

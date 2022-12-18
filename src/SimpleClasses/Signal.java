@@ -3,6 +3,7 @@ package SimpleClasses;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Signal implements Serializable {
@@ -45,6 +46,12 @@ public class Signal implements Serializable {
      }
      public void setSignal(int z, int x, int y, Neuron value){
           neurons[x * DW() + y * sizeZ + z] = value;
+     }
+     public void setValueVector(List<Double> list){
+          if(list.size() != sizeZ){ return; }
+          for(int i = 0; i < list.size(); i++){
+               neurons[i] = new Neuron(list.get(i));
+          }
      }
      //IndexOf
      public int IndexOf(Neuron x){

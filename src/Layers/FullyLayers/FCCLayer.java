@@ -3,6 +3,7 @@ package Layers.FullyLayers;
 import Collector.Initializations.Generation;
 import Layers.Activation.Functions.Function;
 import Layers.Activation.Functions.Softmax;
+import Layers.Enums.TypeLayer;
 import SimpleClasses.Signal;
 
 public class FCCLayer extends FCHLayer {
@@ -10,6 +11,7 @@ public class FCCLayer extends FCHLayer {
 
     public FCCLayer(int countNeurons, Function typeActivation) {
         super(countNeurons, typeActivation);
+        typeLayer = TypeLayer.Output;
     }
     @Override
     public Signal BackPropagation(Signal delta, int Right, double E, double A) {

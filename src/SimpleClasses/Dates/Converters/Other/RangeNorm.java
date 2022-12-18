@@ -1,11 +1,11 @@
-package SimpleClasses.Dates.Converters.Enums;
+package SimpleClasses.Dates.Converters.Other;
 
 import java.lang.reflect.Array;
 
 public class RangeNorm<T extends Double>  {
     T[] range;
 
-    public RangeNorm(T max, T min) {
+    public RangeNorm(T min, T max) {
         range = createGenericArray(max.getClass(), 2);
         range[0] = max;
         range[1] = min;

@@ -1,5 +1,6 @@
 package Layers.ConvLayers;
 
+import Layers.Enums.TypeLayer;
 import Layers.Layer;
 import SimpleClasses.Signal;
 
@@ -8,7 +9,10 @@ import java.io.Serializable;
 public class PoolingLayer extends Layer {
     private Signal mask;
     private int scale = 2;
-    public PoolingLayer(int scale){ this.scale = scale; }
+    public PoolingLayer(int scale){
+        this.scale = scale;
+        typeLayer = TypeLayer.Input;
+    }
     @Override
     public Signal Forward(Signal input) {
         this.input = input;
