@@ -1,10 +1,13 @@
-package SimpleClasses.Dates.Converters.Other;
+package SimpleClasses.Dates.Converters.Other.PorterStemmer;
+
+import SimpleClasses.Dates.Converters.Enums.LanguageStemmer;
 
 import java.util.Locale;
 
-public class PorterStemmer {
+public class PorterStemmerEN implements PorterStemmer {
 
-    public String stemWord(String word) {
+    @Override
+    public String StemWord(String word) {
         String stem = word.toLowerCase(Locale.getDefault());
         if (stem.length() < 3) return stem;
         stem = stemStep1a(stem);
@@ -18,7 +21,7 @@ public class PorterStemmer {
         return stem;
     }
 
-    String stemStep1a(String input) {
+    private String stemStep1a(String input) {
         // SSES -> SS
         if (input.endsWith("sses")) {
             return input.substring(0, input.length() - 2);
@@ -38,7 +41,7 @@ public class PorterStemmer {
         return input;
     }
 
-    String stemStep1b(String input) {
+    private String stemStep1b(String input) {
         // (m>0) EED -> EE
         if (input.endsWith("eed")) {
             String stem = input.substring(0, input.length() - 1);
@@ -103,7 +106,7 @@ public class PorterStemmer {
         return input;
     }
 
-    String stemStep1c(String input) {
+    private String stemStep1c(String input) {
         if (input.endsWith("y")) {
             String stem = input.substring(0, input.length() - 1);
             String letterTypes = getLetterTypes(stem);
@@ -112,7 +115,7 @@ public class PorterStemmer {
         return input;
     }
 
-    String stemStep2(String input) {
+    private String stemStep2(String input) {
         String[] s1 = new String[]{
                 "ational",
                 "tional",
@@ -173,7 +176,7 @@ public class PorterStemmer {
         return input;
     }
 
-    String stemStep3(String input) {
+    private String stemStep3(String input) {
         String[] s1 = new String[]{
                 "icate",
                 "ative",
@@ -207,7 +210,7 @@ public class PorterStemmer {
 
     }
 
-    String stemStep4(String input) {
+    private String stemStep4(String input) {
         String[] suffixes = new String[]{
                 "al",
                 "ance",
@@ -251,7 +254,7 @@ public class PorterStemmer {
         return input;
     }
 
-    String stemStep5a(String input) {
+    private String stemStep5a(String input) {
         if (input.endsWith("e")) {
             String stem = input.substring(0, input.length() - 1);
             String letterTypes = getLetterTypes(stem);
@@ -268,7 +271,7 @@ public class PorterStemmer {
         return input;
     }
 
-    String stemStep5b(String input) {
+    private String stemStep5b(String input) {
         // (m > 1 and *d and *L) -> single letter
         String letterTypes = getLetterTypes(input);
         int m = getM(letterTypes);
@@ -317,7 +320,7 @@ public class PorterStemmer {
         return letterTypes.toString();
     }
 
-    int getM(String letterTypes) {
+    private int getM(String letterTypes) {
         if (letterTypes.length() < 2) return 0;
         if (letterTypes.charAt(0) == 'c') return (letterTypes.length() - 1) / 2;
         return letterTypes.length() / 2;

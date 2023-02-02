@@ -4,13 +4,13 @@ import Layers.ConvLayers.ConvolutionLayer;
 import Layers.ConvLayers.PoolingLayer;
 import Layers.FullyLayers.FCCLayer;
 import Layers.FullyLayers.FCHLayer;
+import Layers.Layer;
 import SimpleClasses.Dates.Batch;
-import SimpleClasses.Dates.Converters.ConverterImage;
 import SimpleClasses.Dates.Converters.ConverterText;
+import SimpleClasses.Dates.Converters.Enums.LanguageStemmer;
 import SimpleClasses.Dates.Converters.Enums.TokenType;
-import SimpleClasses.Dates.Converters.Other.PorterStemmer;
+import SimpleClasses.Dates.Converters.Other.PorterStemmer.PorterStemmerRU;
 import SimpleClasses.Dates.Converters.Other.RangeNorm;
-import SimpleClasses.Dates.Converters.Enums.TypeImage;
 import SimpleClasses.Dates.Converters.Exceptions.NoDirectoryException;
 import SimpleClasses.Dates.MiniBatch;
 import SimpleClasses.Signal;
@@ -18,21 +18,20 @@ import SimpleClasses.Signal;
 import java.io.*;
 import java.text.DecimalFormat;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Main {
     public static void main (String[] args) throws NoDirectoryException, IOException, ClassNotFoundException {
-        //var pathIm = "C:\\Games\\Programs\\Fonts\\Numbers(32x32) - 2 count";
-        //var pathText = "C:\\Games\\Programs\\Fonts\\Texts";
-        //var save = "C:\\Games\\Programs\\Fonts\\SaveNet\\save.bin";
-        //ConverterText data = new ConverterText(pathText, TokenType.Word, new RangeNorm(-1.0, 1.0));
-        //ConverterImage data = new ConverterImage(pathIm, TypeImage.BW, new RangeNorm(-1.0, 1.0));
-        //var net = Load(save);
-        //var batch = new Batch(data.dates, 10);
-        //net.Train(batch);
-        //var result = net.Test(batch);
-        //Save(net, save);
-        //ShowSignal(data.dates.get(0));
-        System.out.println("END");
+/*        var convText  = new ConverterText("C:\\Games\\Programs\\DataSets\\TextNet\\Texts",
+                TokenType.Word, LanguageStemmer.EN, new RangeNorm(0.0, 1.0));
+        for (var text : convText.dates) {
+            ShowSignal(text);
+            System.out.println("\n");
+        }*/
+        var poster= new PorterStemmerRU();
+        var result = poster.StemWord("ПАВИЛЬОН");
+        System.out.println(result);
     }
 
     private static Network CreateTest() {

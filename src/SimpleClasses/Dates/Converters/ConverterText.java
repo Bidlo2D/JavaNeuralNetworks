@@ -1,10 +1,13 @@
 package SimpleClasses.Dates.Converters;
 
 import SimpleClasses.Dates.Converters.Enums.FormatText;
+import SimpleClasses.Dates.Converters.Enums.LanguageStemmer;
 import SimpleClasses.Dates.Converters.Enums.TokenType;
 import SimpleClasses.Dates.Converters.Exceptions.NoDirectoryException;
 import SimpleClasses.Dates.Converters.Other.Normalization;
-import SimpleClasses.Dates.Converters.Other.PorterStemmer;
+import SimpleClasses.Dates.Converters.Other.PorterStemmer.PorterStemmer;
+import SimpleClasses.Dates.Converters.Other.PorterStemmer.PorterStemmerEN;
+import SimpleClasses.Dates.Converters.Other.PorterStemmer.PorterStemmerRU;
 import SimpleClasses.Dates.Converters.Other.RangeNorm;
 import SimpleClasses.Signal;
 
@@ -16,13 +19,16 @@ import java.util.List;
 
 public class ConverterText {
     public List<Signal> dates = new ArrayList();
-    private PorterStemmer porterStemmer = new PorterStemmer();
+    private PorterStemmer porterStemmer;
     private TokenType type;
     private RangeNorm range;
+    private LanguageStemmer language;
 
-    public ConverterText(String pathDir, TokenType type, RangeNorm range) throws NoDirectoryException {
+    public ConverterText(String pathDir, TokenType type, LanguageStemmer language, RangeNorm range) throws NoDirectoryException {
         this.range = range;
         this.type = type;
+        this.language = language;
+        TypeStemmer();
         File dir = new File(pathDir);
         if (!dir.isDirectory()) {
             throw new NoDirectoryException("Путь не является директорией!");
@@ -33,6 +39,16 @@ public class ConverterText {
             if(isText(files[b])){
                 dates.add(ReadText(files[b]));
             }
+        }
+    }
+    private void TypeStemmer(){
+        switch (language){
+            case EN:
+                porterStemmer = new PorterStemmerEN();
+                break;
+            case RU:
+                porterStemmer = new PorterStemmerRU();
+                break;
         }
     }
 
@@ -61,6 +77,28 @@ public class ConverterText {
             return null;
         }
     }
+    private Signal addTokenWord(String str, int answer) {
+        int i = 0;
+        List<String> listWord = new ArrayList<>();
+        List<Double> tokenWord = new ArrayList<>();
+        String strStemmer = porterStemmer.StemWord(str);
+        String[] words = strStemmer.replaceAll("[^a-zA-Z ]", "").toLowerCase().split("\\s+");
+        for (String word : words) {
+            Double s = 0.0;
+            if(listWord.contains(word)){ continue; }
+            else{ listWord.add(word); }
+            for (String word1 : words) {
+                if(word.equalsIgnoreCase(word1)){
+                    s += 1.0;
+                }
+            }
+            tokenWord.add(s);
+        }
+        Signal signal = new Signal(tokenWord.size(),1,1, answer);
+        signal.setValueVector(tokenWord);
+        Normalization.NormalSignal(signal, range);
+        return signal;
+    }
     private Signal addTokenSymbol(String str, int answer) {
         int i = 0;
         int size = str.toCharArray().length;
@@ -76,28 +114,6 @@ public class ConverterText {
             }
             signal.setValueSignal(i,0,0, s); i++;
         }
-        Normalization.NormalSignal(signal, range);
-        return signal;
-    }
-    private Signal addTokenWord(String str, int answer) {
-        int i = 0;
-        List<String> listWord = new ArrayList<>();
-        List<Double> tokenWord = new ArrayList<>();
-        String strStemmer = porterStemmer.stemWord(str);
-        String[] words = strStemmer.replaceAll("[^a-zA-Z ]", "").toLowerCase().split("\\s+");
-        for (String word : words) {
-            Double s = 0.0;
-            if(listWord.contains(word)){ continue; }
-            else{ listWord.add(word); }
-            for (String word1 : words) {
-                if(word.equalsIgnoreCase(word1)){
-                    s += 1.0;
-                }
-            }
-            tokenWord.add(s);
-        }
-        Signal signal = new Signal(tokenWord.size(),1,1, answer);
-        signal.setValueVector(tokenWord);
         Normalization.NormalSignal(signal, range);
         return signal;
     }
