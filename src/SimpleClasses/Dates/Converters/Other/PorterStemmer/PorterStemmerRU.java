@@ -8,14 +8,11 @@ import java.util.regex.Pattern;
 
 public class PorterStemmerRU implements PorterStemmer{
 
-    String PERFECTIVE_GERUNDS1 ="(в|вши|вшись)$";
-    String PERFECTIVE_GERUNDS2 ="(ив|ивши|ившись|ыв|ывши|ывшись)$";
+    String PERFECTIVE_GERUNDS ="((ив|ивши|ившись|ыв|ывши|ывшись)|((?<=[ая])(в|вши|вшись)))$";
     String ADJECTIVE ="(ее|ие|ые|ое|ими|ыми|ей|ий|ый|ой|ем|им|ым|ом|его|ого|ему|ому|их|ых|ую|юю|ая|яя|ою|ею)$";
-    String PARTICIPLE1 ="(ем|нн|вш|ющ|щ)$";
-    String PARTICIPLE2 ="(ивш|ывш|ующ)$";
-    String REFLEXIVES ="(ся|сь)$";
-    String VERB1 ="(ла|на|ете|йте|ли|й|л|ем|н|ло|но|ет|ют|ны|ть|ешь|нно)$";
-    String VERB2 ="(ила|ыла|ена|ейте|уйте|ите|или|ыли|ей|уй|ил|ыл|им|ым|ен|ило|ыло|ено|ят|ует|уют|ит|ыт|ены|ить|ыть|ишь|ую|ю)$";
+    String PARTICIPLE ="((ивш|ывш|ующ)|((?<=[ая])(ем|нн|вш|ющ|щ)))$";
+    String REFLEXIVES ="(с[яь])$";
+    String VERB ="((ила|ыла|ена|ейте|уйте|ите|или|ыли|ей|уй|ил|ыл|им|ым|ен|ило|ыло|ено|ят|ует|уют|ит|ыт|ены|ить|ыть|ишь|ую|ю)|((?<=[ая])(ла|на|ете|йте|ли|й|л|ем|н|ло|но|ет|ют|ны|ть|ешь|нно)))$";
     String NOUN ="(а|ев|ов|ие|ье|е|ьё|иями|ями|ами|еи|ии|и|ией|ей|ой|ий|й|иям|ям|ием|ем|ам|ом|о|у|ах|иях|ях|ы|ь|ию|ью|ю|ия|ья|я)$";
     String SUPERLATIVE ="(ейш|ейше)$";
     String DERIVATIONAL ="(ост|ость)$";
@@ -36,12 +33,12 @@ public class PorterStemmerRU implements PorterStemmer{
     }
 
     public void StemStep1(StringBuilder input) {
-        if(!RemoveEnding(new String[]{PERFECTIVE_GERUNDS1, PERFECTIVE_GERUNDS2}, input))
+        if(!RemoveEnding(PERFECTIVE_GERUNDS, input))
         {
             RemoveEnding(REFLEXIVES, input);
-            if(!RemoveEnding(new String[]{ PARTICIPLE1, PARTICIPLE2 }, input) ||
+            if(!RemoveEnding(PARTICIPLE, input) ||
                     RemoveEnding(ADJECTIVE, input)){
-                if(!RemoveEnding(new String[]{ VERB1, VERB2 }, input)){
+                if(!RemoveEnding(VERB, input)){
                     RemoveEnding(NOUN, input);
                 }
             }
@@ -71,19 +68,6 @@ public class PorterStemmerRU implements PorterStemmer{
             int indexE= m.toMatchResult().end();
             input.delete(indexS, indexE);
             return true;
-        }
-        return false;
-    }
-
-    private boolean RemoveEnding(String[] regex, StringBuilder input) {
-        for (var r: regex) {
-            Matcher m = Pattern.compile(r).matcher(input.toString());
-            if (m.find()) {
-                int indexS= m.toMatchResult().start();
-                int indexE= m.toMatchResult().end();
-                input.delete(indexS, indexE);
-                return true;
-            }
         }
         return false;
     }

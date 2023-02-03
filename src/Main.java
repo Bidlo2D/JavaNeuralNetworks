@@ -29,8 +29,9 @@ public class Main {
             ShowSignal(text);
             System.out.println("\n");
         }*/
+        // Fix algoritm stemmer
         var poster= new PorterStemmerRU();
-        var result = poster.StemWord("ПАВИЛЬОН");
+        var result = poster.StemWord("Шушукать");
         System.out.println(result);
     }
 
