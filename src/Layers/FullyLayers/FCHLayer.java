@@ -17,7 +17,6 @@ public class FCHLayer extends Layer {
     public FCHLayer(int countNeurons, Function typeActivation){
         this.countNeurons = countNeurons;
         this.typeActivation = typeActivation;
-        typeLayer = TypeLayer.Hidden;
     }
 
     @Override

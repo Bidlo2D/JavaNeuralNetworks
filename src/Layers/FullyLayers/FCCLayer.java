@@ -11,7 +11,6 @@ public class FCCLayer extends FCHLayer {
 
     public FCCLayer(int countNeurons, Function typeActivation) {
         super(countNeurons, typeActivation);
-        typeLayer = TypeLayer.Output;
     }
     @Override
     public Signal BackPropagation(Signal delta, int Right, double E, double A) {

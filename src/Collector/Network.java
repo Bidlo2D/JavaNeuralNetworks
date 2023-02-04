@@ -44,6 +44,7 @@ public class Network implements Serializable {
         }
         return answers;
     }
+
     private Map<Integer, Double> ForwardLayers(Signal signal){
         for(int l = 0; l < NeuralNetwork.size(); l++) {
             signal = NeuralNetwork.get(l).Forward(signal);
@@ -51,6 +52,7 @@ public class Network implements Serializable {
 
         return signal.getAnswer();
     }
+
     private void BackPropagationLayers(int Right) {
         Signal delta = new Signal();
         for(int l = NeuralNetwork.size() - 1; l >= 0; l--) {

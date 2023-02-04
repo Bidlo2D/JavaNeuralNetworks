@@ -19,7 +19,6 @@ public class ConvolutionLayer extends Layer {
         this.stride = stride;
         this.matrix = matrix;
         this.ratioPadding = ratioPadding;
-        typeLayer = TypeLayer.Input;
     }
 
     @Override

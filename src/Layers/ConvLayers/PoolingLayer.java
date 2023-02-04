@@ -11,7 +11,6 @@ public class PoolingLayer extends Layer {
     private int scale = 2;
     public PoolingLayer(int scale){
         this.scale = scale;
-        typeLayer = TypeLayer.Input;
     }
     @Override
     public Signal Forward(Signal input) {

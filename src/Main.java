@@ -9,6 +9,7 @@ import SimpleClasses.Dates.Batch;
 import SimpleClasses.Dates.Converters.ConverterText;
 import SimpleClasses.Dates.Converters.Enums.LanguageStemmer;
 import SimpleClasses.Dates.Converters.Enums.TokenType;
+import SimpleClasses.Dates.Converters.Other.PorterStemmer.PorterStemmerEN;
 import SimpleClasses.Dates.Converters.Other.PorterStemmer.PorterStemmerRU;
 import SimpleClasses.Dates.Converters.Other.RangeNorm;
 import SimpleClasses.Dates.Converters.Exceptions.NoDirectoryException;
@@ -23,16 +24,13 @@ import java.util.regex.Pattern;
 
 public class Main {
     public static void main (String[] args) throws NoDirectoryException, IOException, ClassNotFoundException {
-/*        var convText  = new ConverterText("C:\\Games\\Programs\\DataSets\\TextNet\\Texts",
-                TokenType.Word, LanguageStemmer.EN, new RangeNorm(0.0, 1.0));
-        for (var text : convText.dates) {
-            ShowSignal(text);
-            System.out.println("\n");
-        }*/
-        // Fix algoritm stemmer
-        var poster= new PorterStemmerRU();
-        var result = poster.StemWord("Шушукать");
-        System.out.println(result);
+        var convText  = new ConverterText("C:\\Games\\Programs\\DataSets\\TextNet\\Texts",
+                TokenType.Word, LanguageStemmer.EN, 200);
+        var batch = new Batch(convText.dates, 1);
+        System.out.println("END");
+/*        PorterStemmerEN porter = new PorterStemmerEN();
+        var r = porter.StemWord("sandcastles");
+        System.out.println(r);*/
     }
 
     private static Network CreateTest() {

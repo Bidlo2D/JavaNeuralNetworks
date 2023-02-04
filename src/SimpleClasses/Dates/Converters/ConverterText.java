@@ -8,25 +8,29 @@ import SimpleClasses.Dates.Converters.Other.Normalization;
 import SimpleClasses.Dates.Converters.Other.PorterStemmer.PorterStemmer;
 import SimpleClasses.Dates.Converters.Other.PorterStemmer.PorterStemmerEN;
 import SimpleClasses.Dates.Converters.Other.PorterStemmer.PorterStemmerRU;
-import SimpleClasses.Dates.Converters.Other.RangeNorm;
+import SimpleClasses.Dates.Converters.Representation.RepresentationText;
+import SimpleClasses.Neuron;
 import SimpleClasses.Signal;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 public class ConverterText {
     public List<Signal> dates = new ArrayList();
+    private int vocabulary = 0;
+    private int maxlen;
     private PorterStemmer porterStemmer;
     private TokenType type;
-    private RangeNorm range;
     private LanguageStemmer language;
 
-    public ConverterText(String pathDir, TokenType type, LanguageStemmer language, RangeNorm range) throws NoDirectoryException {
-        this.range = range;
+    public ConverterText(String pathDir, TokenType type, LanguageStemmer language, int maxlen) throws NoDirectoryException {
         this.type = type;
+        this.maxlen = maxlen;
         this.language = language;
         TypeStemmer();
         File dir = new File(pathDir);
@@ -37,10 +41,13 @@ public class ConverterText {
 
         for(int b = 0; b < files.length; b++) {
             if(isText(files[b])){
-                dates.add(ReadText(files[b]));
+                var result = padSignal(ReadText(files[b]));
+                dates.add(result);
+                vocabulary += result.fullSize();
             }
         }
     }
+
     private void TypeStemmer(){
         switch (language){
             case EN:
@@ -77,28 +84,15 @@ public class ConverterText {
             return null;
         }
     }
+
     private Signal addTokenWord(String str, int answer) {
         int i = 0;
-        List<String> listWord = new ArrayList<>();
-        List<Double> tokenWord = new ArrayList<>();
-        String strStemmer = porterStemmer.StemWord(str);
-        String[] words = strStemmer.replaceAll("[^a-zA-Z ]", "").toLowerCase().split("\\s+");
-        for (String word : words) {
-            Double s = 0.0;
-            if(listWord.contains(word)){ continue; }
-            else{ listWord.add(word); }
-            for (String word1 : words) {
-                if(word.equalsIgnoreCase(word1)){
-                    s += 1.0;
-                }
-            }
-            tokenWord.add(s);
-        }
-        Signal signal = new Signal(tokenWord.size(),1,1, answer);
-        signal.setValueVector(tokenWord);
-        Normalization.NormalSignal(signal, range);
-        return signal;
+        String[] words = str.replaceAll("[^a-zA-Z ]", "").toLowerCase().split("\\s+");
+        words = Arrays.stream(words).map(w ->  w = porterStemmer.StemWord(w)).toArray(String[]::new);
+        // Bag of Words
+        return RepresentationText.BagOfWords(words, answer);
     }
+
     private Signal addTokenSymbol(String str, int answer) {
         int i = 0;
         int size = str.toCharArray().length;
@@ -114,9 +108,9 @@ public class ConverterText {
             }
             signal.setValueSignal(i,0,0, s); i++;
         }
-        Normalization.NormalSignal(signal, range);
         return signal;
     }
+
     private Signal addTokenProposal(String str, int answer) {
         int i = 0;
         var mass = str.split("(?<=[a-z])\\.\\s+");
@@ -130,8 +124,27 @@ public class ConverterText {
             }
             signal.setValueSignal(i,0,0, s); i++;
         }
-        Normalization.NormalSignal(signal, range);
         return signal;
+    }
+
+    private Signal padSignal(Signal input) {
+        if(input.fullSize() > maxlen){
+            var mass = input.getCloneSignals();
+            List<Neuron> list = new ArrayList<Neuron>(Arrays.asList(mass));
+            while(list.size() != maxlen){
+                list.remove(list.size() - 1);
+            }
+            return new Signal(list, input.right);
+        }
+        if(input.fullSize() < maxlen){
+            var mass = input.getCloneSignals();
+            List<Neuron> list = new ArrayList<Neuron>(Arrays.asList(mass));
+            while(list.size() < maxlen){
+                list.add(new Neuron(0));
+            }
+            return new Signal(list, input.right);
+        }
+        return input;
     }
 
     private boolean isText(File file) {

@@ -13,6 +13,7 @@ public class Neuron implements Serializable {
     public double getValue() {
         return value;
     }
+
     public Neuron(){ }
     public Neuron(double value){ this.value = value; }
 

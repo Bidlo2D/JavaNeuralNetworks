@@ -1,10 +1,7 @@
 package SimpleClasses;
 
 import java.io.Serializable;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Signal implements Serializable {
      // Data
@@ -44,6 +41,10 @@ public class Signal implements Serializable {
      public Neuron getSignal(int z, int x, int y){
           return neurons[x * DW() + y * sizeZ + z];
      }
+     public Neuron[] getCloneSignals(){
+          var massLen = Arrays.stream(neurons).map(x->new Neuron(x.getValue())).toArray(Neuron[]::new);
+          return massLen;
+     }
      public void setSignal(int z, int x, int y, Neuron value){
           neurons[x * DW() + y * sizeZ + z] = value;
      }
@@ -59,6 +60,13 @@ public class Signal implements Serializable {
      }
      // Constructors
      public Signal(){}
+     public Signal(List<Neuron> list, int right) {
+          this.sizeZ = list.size();
+          this.sizeX = 1;
+          this.sizeY = 1;
+          this.right = right;
+          neurons = list.toArray(Neuron[]::new);
+     }
      public Signal(int z, int x, int y) {
           this.sizeZ = z; this.sizeX = x; this.sizeY = y;
           neurons = new Neuron[z * x * y];
