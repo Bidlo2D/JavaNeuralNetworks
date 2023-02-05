@@ -4,7 +4,6 @@ import SimpleClasses.Dates.Converters.Enums.FormatText;
 import SimpleClasses.Dates.Converters.Enums.LanguageStemmer;
 import SimpleClasses.Dates.Converters.Enums.TokenType;
 import SimpleClasses.Dates.Converters.Exceptions.NoDirectoryException;
-import SimpleClasses.Dates.Converters.Other.Normalization;
 import SimpleClasses.Dates.Converters.Other.PorterStemmer.PorterStemmer;
 import SimpleClasses.Dates.Converters.Other.PorterStemmer.PorterStemmerEN;
 import SimpleClasses.Dates.Converters.Other.PorterStemmer.PorterStemmerRU;
@@ -17,12 +16,10 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 public class ConverterText {
     public List<Signal> dates = new ArrayList();
-    private int vocabulary = 0;
     private int maxlen;
     private PorterStemmer porterStemmer;
     private TokenType type;
@@ -43,7 +40,6 @@ public class ConverterText {
             if(isText(files[b])){
                 var result = padSignal(ReadText(files[b]));
                 dates.add(result);
-                vocabulary += result.fullSize();
             }
         }
     }

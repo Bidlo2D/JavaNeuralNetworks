@@ -52,7 +52,7 @@ public class FCHLayer extends Layer {
 
     @Override
     public Signal BackPropagation(Signal delta, int Right, double E, double A) {
-        Signal deltaOutput = new Signal(input.sizeZ, input.sizeX, input.sizeY);
+        Signal deltaOutput = new Signal(input.sizeZ, input.sizeX, input.sizeY, true);
         for (int i = 0; i < weights.n; i++)
         {
             double df = 0;
@@ -72,15 +72,15 @@ public class FCHLayer extends Layer {
         return deltaOutput;
     }
 
-    protected void Initialization(){
+    protected void Initialization() {
         int sizeZ = input.fullSize();
-        output = new Signal(countNeurons, 1, 1);
+        output = new Signal(countNeurons, 1, 1, false);
         if(typeActivation.getClass().getSimpleName().equals("Softmax")){
             Softmax castedDog = (Softmax) typeActivation;
             castedDog.output = output;
         }
-        corrections = new Signal(countNeurons, 1,1);
+        corrections = new Signal(countNeurons, 1,1, true);
         biases = Generation.RandomSignal(countNeurons, 1 , 1 , 0, 0, 0.1);
-        weights = Generation.RandomWeight(countNeurons, sizeZ, -1, 1);
+        weights = Generation.RandomWeight(countNeurons, sizeZ, -0.05, 0.05);
     }
 }

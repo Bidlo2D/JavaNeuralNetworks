@@ -66,7 +66,7 @@ public class ConvolutionLayer extends Layer {
         int width = stride * (output.sizeY - 1) + 1;
         int depth = output.sizeZ;
 
-        Signal deltas = new Signal(depth, height, width); // создаём тензор для дельт
+        Signal deltas = new Signal(depth, height, width, true); // создаём тензор для дельт
 
         // расчитываем значения дельт
         for (int d = 0; d < depth; d++)
@@ -103,7 +103,7 @@ public class ConvolutionLayer extends Layer {
         }
 
         int pad = matrix - 1 - ratioPadding; // заменяем величину дополнения
-        Signal deltaOutput = new Signal(input.sizeZ, input.sizeX, input.sizeY); // создаём тензор градиентов по входу
+        Signal deltaOutput = new Signal(input.sizeZ, input.sizeX, input.sizeY, true); // создаём тензор градиентов по входу
 
         // расчитываем значения градиента
         for (int y = 0; y < input.sizeX; y++) {
@@ -163,7 +163,7 @@ public class ConvolutionLayer extends Layer {
         channel = input.sizeZ;
         cores = new Signal[countCore];
         cBias = new Signal[countCore];
-        db = new Signal(countCore, 1, 1);
+        db = new Signal(countCore, 1, 1, true);
         bias = Generation.RandomSignal(countCore, 1, 1, 0, 0, 0.1);
         //#2
         for (int i = 0; i < countCore; i++) {
@@ -175,6 +175,6 @@ public class ConvolutionLayer extends Layer {
         int PadY = input.sizeY + 2 * ratioPadding;
         sizeCX = ((PadX - matrix) / stride) + 1;
         sizeCY = ((PadY - matrix) / stride) + 1;
-        output = new Signal(countCore, sizeCX, sizeCY);
+        output = new Signal(countCore, sizeCX, sizeCY, true);
     }
 }

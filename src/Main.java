@@ -2,9 +2,11 @@ import Collector.Network;
 import Layers.Activation.Functions.*;
 import Layers.ConvLayers.ConvolutionLayer;
 import Layers.ConvLayers.PoolingLayer;
+import Layers.EmbeddingLayers.EmbeddingLayer;
 import Layers.FullyLayers.FCCLayer;
 import Layers.FullyLayers.FCHLayer;
 import Layers.Layer;
+import Layers.RecurrentLayers.RecurrentLayer;
 import SimpleClasses.Dates.Batch;
 import SimpleClasses.Dates.Converters.ConverterText;
 import SimpleClasses.Dates.Converters.Enums.LanguageStemmer;
@@ -27,13 +29,36 @@ public class Main {
         var convText  = new ConverterText("C:\\Games\\Programs\\DataSets\\TextNet\\Texts",
                 TokenType.Word, LanguageStemmer.EN, 200);
         var batch = new Batch(convText.dates, 1);
+        var net = CreateTestText();
+        net.Train(batch);
+        var result = net.Test(batch);
+        ShowResult(result);
         System.out.println("END");
 /*        PorterStemmerEN porter = new PorterStemmerEN();
         var r = porter.StemWord("sandcastles");
         System.out.println(r);*/
     }
 
-    private static Network CreateTest() {
+    private static Network CreateTestText() {
+        int classes = 2;
+        Network net = new Network();
+        EmbeddingLayer layerE = new EmbeddingLayer(1000, new Sigmoid());
+        RecurrentLayer layer1 = new RecurrentLayer(120, new Sigmoid());
+        RecurrentLayer layer2 = new RecurrentLayer(80, new Sigmoid());
+        RecurrentLayer layer3 = new RecurrentLayer(60, new Sigmoid());
+        FCCLayer layer4 = new FCCLayer(classes, new Softmax());
+        net.AddLayer(layerE);
+        net.AddLayer(layer1);
+        net.AddLayer(layer1);
+        net.AddLayer(layer2);
+        net.AddLayer(layer3);
+        net.AddLayer(layer4);
+        net.SetEpoth(500);
+        net.SetLearnRate(0.0925);
+        return net;
+    }
+
+    private static Network CreateTestVision() {
         int classes = 10;
         Network net = new Network();
 
@@ -110,6 +135,15 @@ public class Main {
         }
 
         return data;
+    }
+    private static void ShowResult(List<Map<Integer, Double>> list){
+        for (var input: list) {
+            for (var name: input.keySet()) {
+                String key = name.toString();
+                String value = input.get(name).toString();
+                System.out.println("answer = " + key + ", value = " + value);
+            }
+        }
     }
 
     private static void ShowSignal(Signal input){
