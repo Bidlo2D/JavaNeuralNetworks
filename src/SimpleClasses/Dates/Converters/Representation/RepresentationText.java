@@ -22,7 +22,7 @@ public class RepresentationText {
         return signal;
     }
 
-    public static Signal OneHotEncodingWords(String[] words, Integer answer){
+    public static Signal OneHotEncodingWords(String[] words, int answer){
         return null;
     }
     public static Signal OneHotEncodingWord(String word){

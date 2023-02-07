@@ -67,6 +67,12 @@ public class Signal implements Serializable {
           this.right = right;
           neurons = list.toArray(Neuron[]::new);
      }
+     public Signal(List<Neuron> list) {
+          this.sizeZ = list.size();
+          this.sizeX = 1;
+          this.sizeY = 1;
+          neurons = list.toArray(Neuron[]::new);
+     }
      public Signal(int z, int x, int y, boolean fill) {
           this.sizeZ = z; this.sizeX = x; this.sizeY = y;
           neurons = new Neuron[z * x * y];

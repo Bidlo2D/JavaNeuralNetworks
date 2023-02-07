@@ -5,15 +5,11 @@ import Layers.ConvLayers.PoolingLayer;
 import Layers.EmbeddingLayers.EmbeddingLayer;
 import Layers.FullyLayers.FCCLayer;
 import Layers.FullyLayers.FCHLayer;
-import Layers.Layer;
 import Layers.RecurrentLayers.RecurrentLayer;
 import SimpleClasses.Dates.Batch;
 import SimpleClasses.Dates.Converters.ConverterText;
 import SimpleClasses.Dates.Converters.Enums.LanguageStemmer;
 import SimpleClasses.Dates.Converters.Enums.TokenType;
-import SimpleClasses.Dates.Converters.Other.PorterStemmer.PorterStemmerEN;
-import SimpleClasses.Dates.Converters.Other.PorterStemmer.PorterStemmerRU;
-import SimpleClasses.Dates.Converters.Other.RangeNorm;
 import SimpleClasses.Dates.Converters.Exceptions.NoDirectoryException;
 import SimpleClasses.Dates.MiniBatch;
 import SimpleClasses.Signal;
@@ -21,8 +17,6 @@ import SimpleClasses.Signal;
 import java.io.*;
 import java.text.DecimalFormat;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Main {
     public static void main (String[] args) throws NoDirectoryException, IOException, ClassNotFoundException {
@@ -34,26 +28,28 @@ public class Main {
         var result = net.Test(batch);
         ShowResult(result);
         System.out.println("END");
-/*        PorterStemmerEN porter = new PorterStemmerEN();
-        var r = porter.StemWord("sandcastles");
-        System.out.println(r);*/
     }
 
     private static Network CreateTestText() {
         int classes = 2;
         Network net = new Network();
-        EmbeddingLayer layerE = new EmbeddingLayer(1000, new Sigmoid());
-        RecurrentLayer layer1 = new RecurrentLayer(120, new Sigmoid());
-        RecurrentLayer layer2 = new RecurrentLayer(80, new Sigmoid());
-        RecurrentLayer layer3 = new RecurrentLayer(60, new Sigmoid());
-        FCCLayer layer4 = new FCCLayer(classes, new Softmax());
+        EmbeddingLayer layerE = new EmbeddingLayer(800, new Sigmoid());
+        FCHLayer layerFCH1 = new FCHLayer(50, new Sigmoid());
+        RecurrentLayer layerR1 = new RecurrentLayer(120, new Sigmoid());
+        FCHLayer layerFCH2 = new FCHLayer(50, new Sigmoid());
+        RecurrentLayer layerR2 = new RecurrentLayer(120, new Sigmoid());
+        FCCLayer layerC = new FCCLayer(classes, new Softmax());
         net.AddLayer(layerE);
-        net.AddLayer(layer1);
-        net.AddLayer(layer1);
-        net.AddLayer(layer2);
-        net.AddLayer(layer3);
-        net.AddLayer(layer4);
-        net.SetEpoth(500);
+        // 1
+        net.AddLayer(layerFCH1);
+        //net.AddLayer(layerR1);
+        // 2
+        net.AddLayer(layerFCH2);
+        net.AddLayer(layerR2);
+        // 3
+        net.AddLayer(layerC);
+        // Settings
+        net.SetEpoth(1000);
         net.SetLearnRate(0.0925);
         return net;
     }

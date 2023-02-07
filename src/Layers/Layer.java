@@ -10,5 +10,5 @@ public abstract class Layer implements Serializable {
     protected Signal input;
     protected Function typeActivation;
     public abstract Signal Forward(Signal input);
-    public abstract Signal BackPropagation(Signal delta, int Right, double E, double A);
+    public abstract Signal BackPropagation(Signal delta, int right, double E, double A);
 }

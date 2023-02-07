@@ -13,13 +13,13 @@ public class FCCLayer extends FCHLayer {
         super(countNeurons, typeActivation);
     }
     @Override
-    public Signal BackPropagation(Signal delta, int Right, double E, double A) {
+    public Signal BackPropagation(Signal delta, int right, double E, double A) {
         // Подсчет ошибок.
         double error = 0; loss = 0;
         Signal deltaOutput = new Signal(output.sizeZ, output.sizeX, output.sizeY, true);
         for (int i = 0; i < output.sizeZ; i++)
         {
-            if (i == Right)
+            if (i == right)
             {
                 error = 1 - output.getValueSignal(i, 0, 0); //Подсчет ошибки(Положительный)
                 double dout = error * typeActivation.Derivative(output.getSignal(i, 0, 0));
@@ -36,7 +36,7 @@ public class FCCLayer extends FCHLayer {
         loss /= output.sizeZ;
 
         //Обновление весов
-        return super.BackPropagation(deltaOutput, Right, E, A);
+        return super.BackPropagation(deltaOutput, right, E, A);
     }
 
     @Override

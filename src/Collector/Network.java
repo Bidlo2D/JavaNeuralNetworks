@@ -53,10 +53,10 @@ public class Network implements Serializable {
         return signal.getAnswer();
     }
 
-    private void BackPropagationLayers(int Right) {
+    private void BackPropagationLayers(int right) {
         Signal delta = new Signal();
         for(int l = NeuralNetwork.size() - 1; l >= 0; l--) {
-            delta = NeuralNetwork.get(l).BackPropagation(delta, Right, L_rate, A_rate);
+            delta = NeuralNetwork.get(l).BackPropagation(delta, right, L_rate, A_rate);
         }
     }
 }

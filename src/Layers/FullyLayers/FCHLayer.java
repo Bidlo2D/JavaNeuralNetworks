@@ -38,20 +38,20 @@ public class FCHLayer extends Layer {
 
             output.setSignal(w1, 0, 0, Sum);
         }
-        Activation();
+        Activation(output);
         return output;
     }
 
-    private void Activation() {
-        for (int i = 0; i < output.fullSize(); i++)
+    protected void Activation(Signal activation) {
+        for (int i = 0; i < activation.fullSize(); i++)
         {
-            double result = typeActivation.Activation(output.getSignal(i, 0, 0));
-            output.setValueSignal(i, 0, 0, result);
+            double result = typeActivation.Activation(activation.getSignal(i, 0, 0));
+            activation.setValueSignal(i, 0, 0, result);
         }
     }
 
     @Override
-    public Signal BackPropagation(Signal delta, int Right, double E, double A) {
+    public Signal BackPropagation(Signal delta, int right, double E, double A) {
         Signal deltaOutput = new Signal(input.sizeZ, input.sizeX, input.sizeY, true);
         for (int i = 0; i < weights.n; i++)
         {

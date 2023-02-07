@@ -1,6 +1,7 @@
 package SimpleClasses;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 public class Weight implements Serializable {
     // Data
@@ -26,5 +27,8 @@ public class Weight implements Serializable {
     }
     public void setWeight(int x, int y, double value){
         matrix[x][y] = value;
+    }
+    public Weight getCloneWeight(){
+        return new Weight(matrix);
     }
 }

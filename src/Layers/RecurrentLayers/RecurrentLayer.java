@@ -1,23 +1,44 @@
 package Layers.RecurrentLayers;
 
+import Collector.Initializations.Generation;
 import Layers.Activation.Functions.Function;
+import Layers.Activation.Functions.Softmax;
 import Layers.FullyLayers.FCHLayer;
+import SimpleClasses.Neuron;
 import SimpleClasses.Signal;
+import SimpleClasses.Weight;
+
+import java.util.Arrays;
 
 public class RecurrentLayer extends FCHLayer {
     public RecurrentLayer(int countNeurons, Function typeActivation) {
         super(countNeurons, typeActivation);
     }
-
+    private Signal memorySignal;
     @Override
     public Signal Forward(Signal input) {
-        var result = super.Forward(input);
-        if(output.getSignal(0,0,0) != null){
-            return SumSignals(result, output);
+        super.Forward(input);
+        Activation(SumSignals(output, memorySignal));
+        memorySignal = new Signal(Arrays.stream(output.getCloneSignals()).toList());
+        return output;
+    }
+
+    private Signal ForwardNoOutput(Signal input, Weight weights) {
+        var result = new Signal(output.sizeZ, output.sizeX, output.sizeY, true);
+        for (int w1 = 0; w1 < weights.n; w1++)
+        {
+            Neuron Sum = new Neuron();
+            Sum.setValue(biases.getValueSignal(w1, 0, 0));
+            for (int w2 = 0; w2 < weights.m; w2++)
+            {
+                double plus = input.getValueSignal(w2, 0, 0) * weights.getWeight(w1, w2);
+                Sum.setValue(Sum.getValue() + plus);
+            }
+
+            result.setSignal(w1, 0, 0, Sum);
         }
-        else{
-            return result;
-        }
+        Activation(result);
+        return result;
     }
 
     private Signal SumSignals(Signal X, Signal Y) {
@@ -31,6 +52,12 @@ public class RecurrentLayer extends FCHLayer {
                 }
             }
         }
+        //Activation(X);
         return X;
+    }
+
+    protected void Initialization() {
+        super.Initialization();
+        memorySignal = new Signal(output.sizeZ, output.sizeX, output.sizeY, true);
     }
 }
