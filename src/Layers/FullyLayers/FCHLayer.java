@@ -3,7 +3,6 @@ package Layers.FullyLayers;
 import Collector.Initializations.Generation;
 import Layers.Activation.Functions.Function;
 import Layers.Activation.Functions.Softmax;
-import Layers.Enums.TypeLayer;
 import Layers.Layer;
 import SimpleClasses.Neuron;
 import SimpleClasses.Signal;
@@ -51,16 +50,16 @@ public class FCHLayer extends Layer {
     }
 
     @Override
-    public Signal BackPropagation(Signal delta, int right, double E, double A) {
+    public Signal BackPropagationTeacher(Signal delta, int right, double E, double A) {
         Signal deltaOutput = new Signal(input.sizeZ, input.sizeX, input.sizeY, true);
         for (int i = 0; i < weights.n; i++)
         {
             double df = 0;
             for (int j = 0; j < weights.m; j++)
             {
-                double dout = typeActivation.Derivative(input.getSignal(j, 0, 0));
-                df += dout * delta.getValueSignal(i, 0, 0);
-                double gradient = (dout * (weights.getWeight(i, j) * delta.getValueSignal(i, 0, 0)));
+                double derivative = typeActivation.Derivative(input.getSignal(j, 0, 0));
+                df += derivative * delta.getValueSignal(i, 0, 0);
+                double gradient = (derivative * (weights.getWeight(i, j) * delta.getValueSignal(i, 0, 0)));
                 deltaOutput.setValueSignal(j, 0, 0, gradient + deltaOutput.getValueSignal(j, 0, 0));
                 double GRADw = input.getValueSignal(j, 0, 0) * delta.getValueSignal(i, 0, 0);
                 double gradientNext = E * GRADw + A * corrections.getValueSignal(i, 0, 0);
@@ -70,6 +69,11 @@ public class FCHLayer extends Layer {
             biases.setValueSignal(i, 0, 0, (df * E) + biases.getValueSignal(i, 0, 0));
         }
         return deltaOutput;
+    }
+
+    @Override
+    public Signal BackPropagationNoTeacher(Signal delta, double E, double A) {
+        return null;
     }
 
     protected void Initialization() {

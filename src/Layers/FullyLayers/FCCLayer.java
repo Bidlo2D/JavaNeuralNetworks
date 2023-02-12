@@ -3,7 +3,6 @@ package Layers.FullyLayers;
 import Collector.Initializations.Generation;
 import Layers.Activation.Functions.Function;
 import Layers.Activation.Functions.Softmax;
-import Layers.Enums.TypeLayer;
 import SimpleClasses.Signal;
 
 public class FCCLayer extends FCHLayer {
@@ -13,7 +12,7 @@ public class FCCLayer extends FCHLayer {
         super(countNeurons, typeActivation);
     }
     @Override
-    public Signal BackPropagation(Signal delta, int right, double E, double A) {
+    public Signal BackPropagationTeacher(Signal delta, int right, double E, double A) {
         // Подсчет ошибок.
         double error = 0; loss = 0;
         Signal deltaOutput = new Signal(output.sizeZ, output.sizeX, output.sizeY, true);
@@ -36,7 +35,12 @@ public class FCCLayer extends FCHLayer {
         loss /= output.sizeZ;
 
         //Обновление весов
-        return super.BackPropagation(deltaOutput, right, E, A);
+        return super.BackPropagationTeacher(deltaOutput, right, E, A);
+    }
+
+    @Override
+    public Signal BackPropagationNoTeacher(Signal delta, double E, double A) {
+        return null;
     }
 
     @Override

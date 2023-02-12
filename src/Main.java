@@ -20,29 +20,30 @@ import java.util.*;
 
 public class Main {
     public static void main (String[] args) throws NoDirectoryException, IOException, ClassNotFoundException {
+        int maxlen = 200;
         var convText  = new ConverterText("C:\\Games\\Programs\\DataSets\\TextNet\\Texts",
-                TokenType.Word, LanguageStemmer.EN, 200);
+                TokenType.Word, LanguageStemmer.EN, maxlen);
         var batch = new Batch(convText.dates, 1);
-        var net = CreateTestText();
+        var net = CreateTestText(maxlen);
         net.Train(batch);
         var result = net.Test(batch);
         ShowResult(result);
         System.out.println("END");
     }
 
-    private static Network CreateTestText() {
-        int classes = 2;
+    private static Network CreateTestText(int maxlen) {
+        int classes = maxlen;
         Network net = new Network();
         EmbeddingLayer layerE = new EmbeddingLayer(800, new Sigmoid());
         FCHLayer layerFCH1 = new FCHLayer(50, new Sigmoid());
-        RecurrentLayer layerR1 = new RecurrentLayer(120, new Sigmoid());
-        FCHLayer layerFCH2 = new FCHLayer(50, new Sigmoid());
-        RecurrentLayer layerR2 = new RecurrentLayer(120, new Sigmoid());
+        RecurrentLayer layerR1 = new RecurrentLayer(30, new Tangent());
+        FCHLayer layerFCH2 = new FCHLayer(80, new Sigmoid());
+        RecurrentLayer layerR2 = new RecurrentLayer(60, new Tangent());
         FCCLayer layerC = new FCCLayer(classes, new Softmax());
         net.AddLayer(layerE);
         // 1
         net.AddLayer(layerFCH1);
-        //net.AddLayer(layerR1);
+        net.AddLayer(layerR1);
         // 2
         net.AddLayer(layerFCH2);
         net.AddLayer(layerR2);
@@ -50,7 +51,7 @@ public class Main {
         net.AddLayer(layerC);
         // Settings
         net.SetEpoth(1000);
-        net.SetLearnRate(0.0925);
+        net.SetLearnRate(0.015);
         return net;
     }
 

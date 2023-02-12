@@ -24,6 +24,5 @@ public class Neuron implements Serializable {
             return -1;
         else
             return 0;
-        //return n1.getValue() == n2.getValue() ? 1 : -1;
     }
 }

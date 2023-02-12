@@ -56,7 +56,7 @@ public class Network implements Serializable {
     private void BackPropagationLayers(int right) {
         Signal delta = new Signal();
         for(int l = NeuralNetwork.size() - 1; l >= 0; l--) {
-            delta = NeuralNetwork.get(l).BackPropagation(delta, right, L_rate, A_rate);
+            delta = NeuralNetwork.get(l).BackPropagationTeacher(delta, right, L_rate, A_rate);
         }
     }
 }

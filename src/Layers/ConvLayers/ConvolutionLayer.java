@@ -59,7 +59,7 @@ public class ConvolutionLayer extends Layer {
     }
 
     @Override
-    public Signal BackPropagation(Signal delta, int Right, double E, double A)
+    public Signal BackPropagationTeacher(Signal delta, int Right, double E, double A)
     {
         // расчитываем размер для дельт
         int height = stride * (output.sizeX - 1) + 1;
@@ -133,6 +133,11 @@ public class ConvolutionLayer extends Layer {
         }
         UpdateWeight(E);
         return deltaOutput; // возвращаем тензор градиентов
+    }
+
+    @Override
+    public Signal BackPropagationNoTeacher(Signal delta, double E, double A) {
+        return null;
     }
 
     private void UpdateWeight(double E)

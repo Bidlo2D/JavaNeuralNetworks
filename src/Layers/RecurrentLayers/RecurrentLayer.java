@@ -1,12 +1,8 @@
 package Layers.RecurrentLayers;
-
-import Collector.Initializations.Generation;
 import Layers.Activation.Functions.Function;
-import Layers.Activation.Functions.Softmax;
 import Layers.FullyLayers.FCHLayer;
 import SimpleClasses.Neuron;
 import SimpleClasses.Signal;
-import SimpleClasses.Weight;
 
 import java.util.Arrays;
 
@@ -17,14 +13,11 @@ public class RecurrentLayer extends FCHLayer {
     private Signal memorySignal;
     @Override
     public Signal Forward(Signal input) {
-        super.Forward(input);
-        Activation(SumSignals(output, memorySignal));
-        memorySignal = new Signal(Arrays.stream(output.getCloneSignals()).toList());
-        return output;
-    }
-
-    private Signal ForwardNoOutput(Signal input, Weight weights) {
-        var result = new Signal(output.sizeZ, output.sizeX, output.sizeY, true);
+        this.input = input;
+        if(weights == null ||
+                biases == null ||
+                corrections == null ||
+                output == null) { Initialization(); }
         for (int w1 = 0; w1 < weights.n; w1++)
         {
             Neuron Sum = new Neuron();
@@ -35,10 +28,11 @@ public class RecurrentLayer extends FCHLayer {
                 Sum.setValue(Sum.getValue() + plus);
             }
 
-            result.setSignal(w1, 0, 0, Sum);
+            output.setSignal(w1, 0, 0, Sum);
         }
-        Activation(result);
-        return result;
+        Activation(SumSignals(output, memorySignal));
+        memorySignal = new Signal(Arrays.stream(output.getCloneSignals()).toList());
+        return output;
     }
 
     private Signal SumSignals(Signal X, Signal Y) {
@@ -52,7 +46,6 @@ public class RecurrentLayer extends FCHLayer {
                 }
             }
         }
-        //Activation(X);
         return X;
     }
 

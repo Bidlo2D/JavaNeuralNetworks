@@ -54,7 +54,7 @@ public class PoolingLayer extends Layer {
     }
 
     @Override
-    public Signal BackPropagation(Signal delta, int Right, double E, double A) {
+    public Signal BackPropagationTeacher(Signal delta, int Right, double E, double A) {
         Signal deltaOutput = new Signal(input.sizeZ, input.sizeX, input.sizeY, true); // создаём тензор для градиентов
 
         for (int d = 0; d < input.sizeZ; d++)
@@ -67,6 +67,11 @@ public class PoolingLayer extends Layer {
                 }
 
         return deltaOutput; // возвращаем посчитанные градиенты
+    }
+
+    @Override
+    public Signal BackPropagationNoTeacher(Signal delta, double E, double A) {
+        return null;
     }
 
     private void Initialization(Signal input) {
