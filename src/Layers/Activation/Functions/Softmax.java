@@ -10,7 +10,7 @@ public class Softmax extends Function {
     public double Activation(Neuron x) {
         double numerator = Math.exp(x.getValue());
         double denominator = numerator;
-        int index = output.IndexOf(x);
+        int index = output.indexOf(x);
         for (int i = 0; i < output.fullSize(); i++)
         {
             if (i == index)

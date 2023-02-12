@@ -22,7 +22,7 @@ public class ConvolutionLayer extends Layer {
     }
 
     @Override
-    public Signal Forward(Signal input) {
+    public Signal forward(Signal input) {
         this.input = input;
         if(db == null ||
            bias == null ||
@@ -59,7 +59,7 @@ public class ConvolutionLayer extends Layer {
     }
 
     @Override
-    public Signal BackPropagationTeacher(Signal delta, int Right, double E, double A)
+    public Signal backPropagationTeacher(Signal delta, int Right, double E, double A)
     {
         // расчитываем размер для дельт
         int height = stride * (output.sizeX - 1) + 1;
@@ -136,7 +136,7 @@ public class ConvolutionLayer extends Layer {
     }
 
     @Override
-    public Signal BackPropagationNoTeacher(Signal delta, double E, double A) {
+    public Signal backPropagationNoTeacher(Signal delta, double E, double A) {
         return null;
     }
 

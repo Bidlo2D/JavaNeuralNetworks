@@ -4,9 +4,11 @@ import SimpleClasses.Dates.Converters.Enums.FormatText;
 import SimpleClasses.Dates.Converters.Enums.LanguageStemmer;
 import SimpleClasses.Dates.Converters.Enums.TokenType;
 import SimpleClasses.Dates.Converters.Exceptions.NoDirectoryException;
+import SimpleClasses.Dates.Converters.Other.Normalization;
 import SimpleClasses.Dates.Converters.Other.PorterStemmer.PorterStemmer;
 import SimpleClasses.Dates.Converters.Other.PorterStemmer.PorterStemmerEN;
 import SimpleClasses.Dates.Converters.Other.PorterStemmer.PorterStemmerRU;
+import SimpleClasses.Dates.Converters.Other.RangeNorm;
 import SimpleClasses.Dates.Converters.Representation.RepresentationText;
 import SimpleClasses.Neuron;
 import SimpleClasses.Signal;
@@ -24,11 +26,13 @@ public class ConverterText {
     private PorterStemmer porterStemmer;
     private TokenType type;
     private LanguageStemmer language;
+    private RangeNorm range;
 
-    public ConverterText(String pathDir, TokenType type, LanguageStemmer language, int maxlen) throws NoDirectoryException {
+    public ConverterText(String pathDir, TokenType type, LanguageStemmer language, RangeNorm range, int maxlen) throws NoDirectoryException {
         this.type = type;
         this.maxlen = maxlen;
         this.language = language;
+        this.range = range;
         TypeStemmer();
         File dir = new File(pathDir);
         if (!dir.isDirectory()) {
@@ -86,7 +90,9 @@ public class ConverterText {
         String[] words = str.replaceAll("[^a-zA-Z ]", "").toLowerCase().split("\\s+");
         words = Arrays.stream(words).map(w ->  w = porterStemmer.StemWord(w)).toArray(String[]::new);
         // Bag of Words
-        return RepresentationText.BagOfWords(words, answer);
+        var respective = RepresentationText.BagOfWords(words, answer);
+        Normalization.NormalSignal(respective, range);
+        return respective;
     }
 
     private Signal addTokenSymbol(String str, int answer) {

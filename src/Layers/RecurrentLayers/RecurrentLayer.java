@@ -12,12 +12,12 @@ public class RecurrentLayer extends FCHLayer {
     }
     private Signal memorySignal;
     @Override
-    public Signal Forward(Signal input) {
+    public Signal forward(Signal input) {
         this.input = input;
         if(weights == null ||
                 biases == null ||
                 corrections == null ||
-                output == null) { Initialization(); }
+                output == null) { initialization(); }
         for (int w1 = 0; w1 < weights.n; w1++)
         {
             Neuron Sum = new Neuron();
@@ -30,7 +30,7 @@ public class RecurrentLayer extends FCHLayer {
 
             output.setSignal(w1, 0, 0, Sum);
         }
-        Activation(SumSignals(output, memorySignal));
+        activation(SumSignals(output, memorySignal));
         memorySignal = new Signal(Arrays.stream(output.getCloneSignals()).toList());
         return output;
     }
@@ -49,8 +49,8 @@ public class RecurrentLayer extends FCHLayer {
         return X;
     }
 
-    protected void Initialization() {
-        super.Initialization();
+    protected void initialization() {
+        super.initialization();
         memorySignal = new Signal(output.sizeZ, output.sizeX, output.sizeY, true);
     }
 }

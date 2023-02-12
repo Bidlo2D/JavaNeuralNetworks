@@ -13,7 +13,7 @@ public class PoolingLayer extends Layer {
         this.scale = scale;
     }
     @Override
-    public Signal Forward(Signal input) {
+    public Signal forward(Signal input) {
         this.input = input;
         if(mask == null ||
            output == null){ Initialization(input); }
@@ -54,7 +54,7 @@ public class PoolingLayer extends Layer {
     }
 
     @Override
-    public Signal BackPropagationTeacher(Signal delta, int Right, double E, double A) {
+    public Signal backPropagationTeacher(Signal delta, int Right, double E, double A) {
         Signal deltaOutput = new Signal(input.sizeZ, input.sizeX, input.sizeY, true); // создаём тензор для градиентов
 
         for (int d = 0; d < input.sizeZ; d++)
@@ -70,7 +70,7 @@ public class PoolingLayer extends Layer {
     }
 
     @Override
-    public Signal BackPropagationNoTeacher(Signal delta, double E, double A) {
+    public Signal backPropagationNoTeacher(Signal delta, double E, double A) {
         return null;
     }
 

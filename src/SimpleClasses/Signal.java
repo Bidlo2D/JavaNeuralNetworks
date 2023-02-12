@@ -11,20 +11,20 @@ public class Signal implements Serializable {
      public int DW () { return sizeZ * sizeX; }
      public int fullSize () {  return sizeZ * sizeX * sizeY; }
      // Max and Min
-     public double Max()
+     public Neuron max()
      {
-          return Arrays.stream(neurons).max(Neuron::compare).get().getValue();
+          return Arrays.stream(neurons).max(Neuron::compare).get();
      }
 
-     public double Min()
+     public Neuron min()
      {
-          return Arrays.stream(neurons).min(Neuron::compare).get().getValue();
+          return Arrays.stream(neurons).min(Neuron::compare).get();
      }
      // Answer
      public Map<Integer, Double> getAnswer()
      {
           var max = Arrays.stream(neurons).max(Neuron::compare).get();
-          var index = IndexOf(max);
+          var index = indexOf(max);
           var value = max.getValue();
           Map<Integer, Double> answer = new HashMap<>();
           answer.put(index, value);
@@ -55,9 +55,11 @@ public class Signal implements Serializable {
           }
      }
      //IndexOf
-     public int IndexOf(Neuron x){
+     public int indexOf(Neuron x){
           return Arrays.asList(neurons).indexOf(x);
      }
+     // Actions
+     public void allZero(){ Arrays.stream(neurons).forEach(n -> n.setValue(0)); }
      // Constructors
      public Signal(){}
      public Signal(List<Neuron> list, int right) {

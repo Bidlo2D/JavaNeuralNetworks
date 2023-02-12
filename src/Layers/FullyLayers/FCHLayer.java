@@ -19,12 +19,12 @@ public class FCHLayer extends Layer {
     }
 
     @Override
-    public Signal Forward(Signal input) {
+    public Signal forward(Signal input) {
         this.input = input;
         if(weights == null ||
            biases == null ||
            corrections == null ||
-           output == null) { Initialization(); }
+           output == null) { initialization(); }
         for (int w1 = 0; w1 < weights.n; w1++)
         {
             Neuron Sum = new Neuron();
@@ -37,11 +37,11 @@ public class FCHLayer extends Layer {
 
             output.setSignal(w1, 0, 0, Sum);
         }
-        Activation(output);
+        activation(output);
         return output;
     }
 
-    protected void Activation(Signal activation) {
+    protected void activation(Signal activation) {
         for (int i = 0; i < activation.fullSize(); i++)
         {
             double result = typeActivation.Activation(activation.getSignal(i, 0, 0));
@@ -50,7 +50,7 @@ public class FCHLayer extends Layer {
     }
 
     @Override
-    public Signal BackPropagationTeacher(Signal delta, int right, double E, double A) {
+    public Signal backPropagationTeacher(Signal delta, int right, double E, double A) {
         Signal deltaOutput = new Signal(input.sizeZ, input.sizeX, input.sizeY, true);
         for (int i = 0; i < weights.n; i++)
         {
@@ -72,11 +72,11 @@ public class FCHLayer extends Layer {
     }
 
     @Override
-    public Signal BackPropagationNoTeacher(Signal delta, double E, double A) {
+    public Signal backPropagationNoTeacher(Signal delta, double E, double A) {
         return null;
     }
 
-    protected void Initialization() {
+    protected void initialization() {
         int sizeZ = input.fullSize();
         output = new Signal(countNeurons, 1, 1, false);
         if(typeActivation.getClass().getSimpleName().equals("Softmax")){

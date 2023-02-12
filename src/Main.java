@@ -6,11 +6,13 @@ import Layers.EmbeddingLayers.EmbeddingLayer;
 import Layers.FullyLayers.FCCLayer;
 import Layers.FullyLayers.FCHLayer;
 import Layers.RecurrentLayers.RecurrentLayer;
+import Layers.WTA.WTALayer;
 import SimpleClasses.Dates.Batch;
 import SimpleClasses.Dates.Converters.ConverterText;
 import SimpleClasses.Dates.Converters.Enums.LanguageStemmer;
 import SimpleClasses.Dates.Converters.Enums.TokenType;
 import SimpleClasses.Dates.Converters.Exceptions.NoDirectoryException;
+import SimpleClasses.Dates.Converters.Other.RangeNorm;
 import SimpleClasses.Dates.MiniBatch;
 import SimpleClasses.Signal;
 
@@ -22,7 +24,7 @@ public class Main {
     public static void main (String[] args) throws NoDirectoryException, IOException, ClassNotFoundException {
         int maxlen = 200;
         var convText  = new ConverterText("C:\\Games\\Programs\\DataSets\\TextNet\\Texts",
-                TokenType.Word, LanguageStemmer.EN, maxlen);
+                TokenType.Word, LanguageStemmer.EN, new RangeNorm(-1.0, 1.0), maxlen);
         var batch = new Batch(convText.dates, 1);
         var net = CreateTestText(maxlen);
         net.Train(batch);
@@ -34,19 +36,19 @@ public class Main {
     private static Network CreateTestText(int maxlen) {
         int classes = maxlen;
         Network net = new Network();
-        EmbeddingLayer layerE = new EmbeddingLayer(800, new Sigmoid());
-        FCHLayer layerFCH1 = new FCHLayer(50, new Sigmoid());
+        EmbeddingLayer layerE = new EmbeddingLayer(800, new Tangent());
+        WTALayer layerWTA = new WTALayer(15, new Tangent());
         RecurrentLayer layerR1 = new RecurrentLayer(30, new Tangent());
-        FCHLayer layerFCH2 = new FCHLayer(80, new Sigmoid());
-        RecurrentLayer layerR2 = new RecurrentLayer(60, new Tangent());
+        FCHLayer layerFCH2 = new FCHLayer(35, new Tangent());
+        RecurrentLayer layerR2 = new RecurrentLayer(25, new Tangent());
         FCCLayer layerC = new FCCLayer(classes, new Softmax());
         net.AddLayer(layerE);
         // 1
-        net.AddLayer(layerFCH1);
-        net.AddLayer(layerR1);
+        net.AddLayer(layerWTA);
+        //net.AddLayer(layerR1);
         // 2
-        net.AddLayer(layerFCH2);
-        net.AddLayer(layerR2);
+        //net.AddLayer(layerFCH2);
+        //net.AddLayer(layerR2);
         // 3
         net.AddLayer(layerC);
         // Settings

@@ -5,8 +5,8 @@ import SimpleClasses.Signal;
 public class Normalization {
 
     public static void NormalSignal(Signal signal, RangeNorm range) {
-        double minS = signal.Min();
-        double maxS = signal.Max();
+        double minS = signal.min().getValue();
+        double maxS = signal.max().getValue();
         for (int z = 0, n = 0; z < signal.sizeZ; z++) {
             for (int x = 0; x < signal.sizeX; x++) {
                 for (int y = 0; y < signal.sizeY; y++, n++) {
