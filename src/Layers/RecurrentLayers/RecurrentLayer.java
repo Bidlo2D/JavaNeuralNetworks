@@ -1,7 +1,7 @@
 package Layers.RecurrentLayers;
 import Layers.Activation.Functions.Function;
 import Layers.FullyLayers.FCHLayer;
-import SimpleClasses.Neuron;
+import SimpleClasses.ComputingUnits.NeuronFC;
 import SimpleClasses.Signal;
 
 import java.util.Arrays;
@@ -20,7 +20,7 @@ public class RecurrentLayer extends FCHLayer {
                 output == null) { initialization(); }
         for (int w1 = 0; w1 < weights.n; w1++)
         {
-            Neuron Sum = new Neuron();
+            NeuronFC Sum = new NeuronFC();
             Sum.setValue(biases.getValueSignal(w1, 0, 0));
             for (int w2 = 0; w2 < weights.m; w2++)
             {
@@ -51,6 +51,6 @@ public class RecurrentLayer extends FCHLayer {
 
     protected void initialization() {
         super.initialization();
-        memorySignal = new Signal(output.sizeZ, output.sizeX, output.sizeY, true);
+        memorySignal = new Signal(output.sizeZ, output.sizeX, output.sizeY);
     }
 }

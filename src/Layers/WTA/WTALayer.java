@@ -1,20 +1,22 @@
 package Layers.WTA;
 import Collector.Initializations.Generation;
+import Collector.Network;
 import Layers.Activation.Functions.Function;
 import Layers.Activation.Functions.Softmax;
 import Layers.FullyLayers.FCHLayer;
-import SimpleClasses.Neuron;
+import SimpleClasses.ComputingUnits.NeuronFC;
+import SimpleClasses.ComputingUnits.NeuronWTA;
 import SimpleClasses.Signal;
 
-import java.util.HashMap;
-
 public class WTALayer extends FCHLayer {
-    HashMap<Integer, HashMap<Neuron, Integer>> victories = new HashMap();
-    int nowWinner;
+    protected Signal<NeuronWTA> output;
+    protected double loss = 0;
+    //private Network sourceNet;
+
     public WTALayer(int countNeurons, Function typeActivation) {
         super(countNeurons, typeActivation);
+        //this.sourceNet = sourceNet;
     }
-
 
     @Override
     public Signal forward(Signal input) {
@@ -25,60 +27,62 @@ public class WTALayer extends FCHLayer {
                 output == null) { initialization(); }
         for (int w1 = 0; w1 < weights.n; w1++)
         {
-            Neuron Sum = new Neuron();
-            Sum.setValue(biases.getValueSignal(w1, 0, 0));
+            double Sum = biases.getValueSignal(w1, 0, 0);
             for (int w2 = 0; w2 < weights.m; w2++)
             {
-                double plus = input.getValueSignal(w2, 0, 0) * weights.getWeight(w1, w2);
-                Sum.setValue(Sum.getValue() + plus);
+                Sum += Math.pow(input.getValueSignal(w2, 0, 0) - weights.getWeight(w1, w2), 2);
             }
-            output.setSignal(w1, 0, 0, Sum);
+
+            output.setValueSignal(w1, 0, 0, Math.sqrt(Sum));
+            output.getSignal(0,0,0).plus();
         }
-        var winner = output.max();
-        var index = output.indexOf(winner);
-        addWinner(index, winner);
-        output.allZero();
-        winner.setValue(1);
+        activation(output);
         return output;
     }
 
-    private void addWinner(Integer index, Neuron n){
-        HashMap<Neuron, Integer> winner = new HashMap<>();
-        if(victories.containsKey(index)){
-            winner = victories.get(index);
-            winner.put(n, winner.getOrDefault(n, 0) + 1);
-        }
-        else{
-            winner.put(n, 1);
-            victories.put(index, winner);
-        }
-        nowWinner = index;
+    @Override
+    protected void activation(Signal activation) {
+        var winner = output.max();
+        int indexWin = output.indexOf(winner);
+        output.allZero();
+        winner.setValue(1);
     }
 
-    @Override
-    public Signal backPropagationTeacher(Signal delta, int right, double E, double A) {
-        Signal deltaOutput = new Signal(input.sizeZ, input.sizeX, input.sizeY, true);
-        for (int w1 = nowWinner; w1 < nowWinner; w1++)
+    public Signal backPropagation(Signal delta, int right, double E, double A) {
+        //delta = errorCounting();
+        //Signal deltaOutput = new Signal(input.sizeZ, input.sizeX, input.sizeY);
+        for (int w1 = 0; w1 <= 1; w1++)
         {
-            double df = 0;
+            //double df = 0;
             for (int w2 = 0; w2 < weights.m; w2++)
             {
-                double derivative = typeActivation.Derivative(input.getSignal(w2, 0, 0));
-                df += derivative * delta.getValueSignal(w1, 0, 0);
-                double gradient = (derivative * (weights.getWeight(w1, w2) * delta.getValueSignal(w1, 0, 0)));
-                deltaOutput.setValueSignal(w2, 0, 0, gradient + deltaOutput.getValueSignal(w2, 0, 0));
-                double GRADw = input.getValueSignal(w2, 0, 0) * delta.getValueSignal(w1, 0, 0);
-                double gradientNext = E * GRADw + A * corrections.getValueSignal(w1, 0, 0);
-                corrections.setValueSignal(w1, 0, 0, gradientNext);
-                weights.setWeight(w1, w2, weights.getWeight(w1, w2) + corrections.getValueSignal(w1, 0, 0));
+                //df += weights.getWeight(w1, w2) * Math.exp(-sourceNet.getCurrentEpoth() / sourceNet.getEpoth());
+                double oldW = weights.getWeight(w1, w2);
+                double updateW = oldW + E * (input.getValueSignal(w2, 0 , 0) - oldW);
+                weights.setWeight(w1, w2, updateW);
             }
-            biases.setValueSignal(w1, 0, 0, (df * E) + biases.getValueSignal(w1, 0, 0));
         }
+        return null;
+    }
+
+    protected Signal errorCounting() {
+        double error = 0; loss = 0;
+        Signal deltaOutput = new Signal(output.sizeZ, output.sizeX, output.sizeY);
         return deltaOutput;
     }
 
     @Override
-    public Signal backPropagationNoTeacher(Signal delta, double E, double A) {
-        return null;
+    protected void initialization() {
+        int sizeZ = input.fullSize();
+        output = new Signal(countNeurons, 1, 1);
+        deltaOutput = new Signal(input.sizeZ, input.sizeX, input.sizeY);
+        if(typeActivation.getClass().getSimpleName().equals("Softmax")){
+            Softmax castedDog = (Softmax) typeActivation;
+            castedDog.output = output;
+        }
+        corrections = new Signal(countNeurons, 1,1);
+        biases = Generation.RandomSignal(countNeurons, 1 , 1 , 0, 0, 0.1);
+        weights = Generation.RandomWeight(countNeurons, sizeZ, -0.05, 0.05);
     }
+
 }

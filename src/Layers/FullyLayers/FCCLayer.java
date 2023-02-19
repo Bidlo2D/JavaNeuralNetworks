@@ -1,21 +1,25 @@
 package Layers.FullyLayers;
 
-import Collector.Initializations.Generation;
 import Layers.Activation.Functions.Function;
-import Layers.Activation.Functions.Softmax;
 import SimpleClasses.Signal;
 
 public class FCCLayer extends FCHLayer {
-    private double loss = 0;
+    protected double loss = 0;
 
     public FCCLayer(int countNeurons, Function typeActivation) {
         super(countNeurons, typeActivation);
     }
     @Override
-    public Signal backPropagationTeacher(Signal delta, int right, double E, double A) {
+    public Signal backPropagation(Signal delta, int right, double E, double A) {
         // Подсчет ошибок.
+        Signal deltaOutput = errorCounting(right);
+        //Обновление весов
+        return super.backPropagation(deltaOutput, right, E, A);
+    }
+
+    protected Signal errorCounting(int right) {
         double error = 0; loss = 0;
-        Signal deltaOutput = new Signal(output.sizeZ, output.sizeX, output.sizeY, true);
+        Signal deltaOutput = new Signal(output.sizeZ, output.sizeX, output.sizeY);
         for (int i = 0; i < output.sizeZ; i++)
         {
             if (i == right)
@@ -33,26 +37,7 @@ public class FCCLayer extends FCHLayer {
             loss += Math.pow(error, 2);
         }
         loss /= output.sizeZ;
-
-        //Обновление весов
-        return super.backPropagationTeacher(deltaOutput, right, E, A);
+        return deltaOutput;
     }
 
-    @Override
-    public Signal backPropagationNoTeacher(Signal delta, double E, double A) {
-        return null;
-    }
-
-/*    @Override
-    protected void initialization(){
-        int sizeZ = input.fullSize();
-        output = new Signal(countNeurons, 1, 1, true);
-        if(typeActivation.getClass().getSimpleName().equals("Softmax")){
-            Softmax castedDog = (Softmax) typeActivation;
-            castedDog.output = output;
-        }
-        corrections = new Signal(sizeZ, 1,1, true);
-        biases = Generation.RandomSignal(sizeZ, 1 , 1 , 0, 0, 0.1);
-        weights = Generation.RandomWeight(countNeurons, sizeZ, -0.05, -0.05);
-    }*/
 }

@@ -1,11 +1,10 @@
 package Layers.ConvLayers;
 
 import Collector.Initializations.Generation;
-import Layers.Activation.Functions.Function;
-import Layers.Enums.TypeLayer;
 import Layers.Layer;
-import SimpleClasses.Neuron;
 import SimpleClasses.Signal;
+
+import java.util.List;
 
 public class ConvolutionLayer extends Layer {
     private int stride = 0, matrix = 0, channel = 0, countCore = 0, sizeCX = 0, sizeCY, ratioPadding = 0;
@@ -19,6 +18,11 @@ public class ConvolutionLayer extends Layer {
         this.stride = stride;
         this.matrix = matrix;
         this.ratioPadding = ratioPadding;
+    }
+
+    @Override
+    public List<Double> getWeightList() {
+        return  null;
     }
 
     @Override
@@ -59,14 +63,14 @@ public class ConvolutionLayer extends Layer {
     }
 
     @Override
-    public Signal backPropagationTeacher(Signal delta, int Right, double E, double A)
+    public Signal backPropagation(Signal delta, int right, double E, double A)
     {
         // расчитываем размер для дельт
         int height = stride * (output.sizeX - 1) + 1;
         int width = stride * (output.sizeY - 1) + 1;
         int depth = output.sizeZ;
 
-        Signal deltas = new Signal(depth, height, width, true); // создаём тензор для дельт
+        Signal deltas = new Signal(depth, height, width); // создаём тензор для дельт
 
         // расчитываем значения дельт
         for (int d = 0; d < depth; d++)
@@ -103,7 +107,7 @@ public class ConvolutionLayer extends Layer {
         }
 
         int pad = matrix - 1 - ratioPadding; // заменяем величину дополнения
-        Signal deltaOutput = new Signal(input.sizeZ, input.sizeX, input.sizeY, true); // создаём тензор градиентов по входу
+        Signal deltaOutput = new Signal(input.sizeZ, input.sizeX, input.sizeY); // создаём тензор градиентов по входу
 
         // расчитываем значения градиента
         for (int y = 0; y < input.sizeX; y++) {
@@ -135,8 +139,7 @@ public class ConvolutionLayer extends Layer {
         return deltaOutput; // возвращаем тензор градиентов
     }
 
-    @Override
-    public Signal backPropagationNoTeacher(Signal delta, double E, double A) {
+    public Signal backPropagation(Signal delta, double E, double A){
         return null;
     }
 
@@ -168,7 +171,7 @@ public class ConvolutionLayer extends Layer {
         channel = input.sizeZ;
         cores = new Signal[countCore];
         cBias = new Signal[countCore];
-        db = new Signal(countCore, 1, 1, true);
+        db = new Signal(countCore, 1, 1);
         bias = Generation.RandomSignal(countCore, 1, 1, 0, 0, 0.1);
         //#2
         for (int i = 0; i < countCore; i++) {
@@ -180,6 +183,6 @@ public class ConvolutionLayer extends Layer {
         int PadY = input.sizeY + 2 * ratioPadding;
         sizeCX = ((PadX - matrix) / stride) + 1;
         sizeCY = ((PadY - matrix) / stride) + 1;
-        output = new Signal(countCore, sizeCX, sizeCY, true);
+        output = new Signal(countCore, sizeCX, sizeCY);
     }
 }

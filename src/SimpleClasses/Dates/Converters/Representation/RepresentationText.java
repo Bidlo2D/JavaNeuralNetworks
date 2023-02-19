@@ -1,5 +1,6 @@
 package SimpleClasses.Dates.Converters.Representation;
 
+import SimpleClasses.ComputingUnits.INeuron;
 import SimpleClasses.Signal;
 
 import java.util.ArrayList;
@@ -16,7 +17,7 @@ public class RepresentationText {
             }
             wordToCount.put(word, wordToCount.get(word) + 1.0);
         }
-        Signal signal = new Signal(wordToCount.size(),1,1, answer);
+        Signal<INeuron> signal = new Signal(wordToCount.size(),1,1, answer);
         List<Double> listValues = new ArrayList(wordToCount.values());
         signal.setValueVector(listValues);
         return signal;

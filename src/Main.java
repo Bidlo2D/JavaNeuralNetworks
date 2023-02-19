@@ -15,6 +15,7 @@ import SimpleClasses.Dates.Converters.Exceptions.NoDirectoryException;
 import SimpleClasses.Dates.Converters.Other.RangeNorm;
 import SimpleClasses.Dates.MiniBatch;
 import SimpleClasses.Signal;
+import SimpleClasses.Visual.GraphPanel;
 
 import java.io.*;
 import java.text.DecimalFormat;
@@ -26,34 +27,38 @@ public class Main {
         var convText  = new ConverterText("C:\\Games\\Programs\\DataSets\\TextNet\\Texts",
                 TokenType.Word, LanguageStemmer.EN, new RangeNorm(-1.0, 1.0), maxlen);
         var batch = new Batch(convText.dates, 1);
-        var net = CreateTestText(maxlen);
-        net.Train(batch);
-        var result = net.Test(batch);
-        ShowResult(result);
+        //var net = CreateTestText();
+        //ShowResult(result);
+        //GraphPanel draw = new GraphPanel(net.getGraphInfo());
+        //draw.paint();
+        WTALayer WTALayer1= new WTALayer(80, new Sigmoid());
+        WTALayer1.forward(batch.miniBatches.get(0).signals.get(0));
         System.out.println("END");
     }
 
-    private static Network CreateTestText(int maxlen) {
-        int classes = maxlen;
+    private static Network CreateTestText() {
+        int classes = 2;
         Network net = new Network();
-        EmbeddingLayer layerE = new EmbeddingLayer(800, new Tangent());
+        EmbeddingLayer layerE = new EmbeddingLayer(30, new Tangent());
         WTALayer layerWTA = new WTALayer(15, new Tangent());
         RecurrentLayer layerR1 = new RecurrentLayer(30, new Tangent());
-        FCHLayer layerFCH2 = new FCHLayer(35, new Tangent());
+        FCHLayer layerFCH1 = new FCHLayer(80, new Sigmoid());
+        FCHLayer layerFCH2 = new FCHLayer(80, new Sigmoid());
         RecurrentLayer layerR2 = new RecurrentLayer(25, new Tangent());
         FCCLayer layerC = new FCCLayer(classes, new Softmax());
-        net.AddLayer(layerE);
+        //net.AddLayer(layerE);
         // 1
-        net.AddLayer(layerWTA);
+        net.addLayer(layerWTA);
         //net.AddLayer(layerR1);
         // 2
+        //net.AddLayer(layerFCH1);
         //net.AddLayer(layerFCH2);
         //net.AddLayer(layerR2);
         // 3
-        net.AddLayer(layerC);
+        //net.AddLayer(layerC);
         // Settings
-        net.SetEpoth(1000);
-        net.SetLearnRate(0.015);
+        net.setEpoth(100);
+        net.setLearnRate(0.0915);
         return net;
     }
 
@@ -69,16 +74,16 @@ public class Main {
         FCHLayer layer2 = new FCHLayer(80, new Tangent());
         FCHLayer layer3 = new FCHLayer(60, new Tangent());
         FCCLayer layer4 = new FCCLayer(classes, new Softmax());
-        net.AddLayer(cl1);
-        net.AddLayer(pl1);
-        net.AddLayer(cl2);
-        net.AddLayer(pl2);
-        net.AddLayer(layer1);
-        net.AddLayer(layer2);
-        net.AddLayer(layer3);
-        net.AddLayer(layer4);
-        net.SetEpoth(300);
-        net.SetLearnRate(0.0925);
+        net.addLayer(cl1);
+        net.addLayer(pl1);
+        net.addLayer(cl2);
+        net.addLayer(pl2);
+        net.addLayer(layer1);
+        net.addLayer(layer2);
+        net.addLayer(layer3);
+        net.addLayer(layer4);
+        net.setEpoth(300);
+        net.setLearnRate(0.0925);
         return net;
     }
 
@@ -135,6 +140,7 @@ public class Main {
 
         return data;
     }
+
     private static void ShowResult(List<Map<Integer, Double>> list){
         for (var input: list) {
             for (var name: input.keySet()) {

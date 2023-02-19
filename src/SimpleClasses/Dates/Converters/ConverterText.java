@@ -1,5 +1,6 @@
 package SimpleClasses.Dates.Converters;
 
+import SimpleClasses.ComputingUnits.INeuron;
 import SimpleClasses.Dates.Converters.Enums.FormatText;
 import SimpleClasses.Dates.Converters.Enums.LanguageStemmer;
 import SimpleClasses.Dates.Converters.Enums.TokenType;
@@ -10,7 +11,7 @@ import SimpleClasses.Dates.Converters.Other.PorterStemmer.PorterStemmerEN;
 import SimpleClasses.Dates.Converters.Other.PorterStemmer.PorterStemmerRU;
 import SimpleClasses.Dates.Converters.Other.RangeNorm;
 import SimpleClasses.Dates.Converters.Representation.RepresentationText;
-import SimpleClasses.Neuron;
+import SimpleClasses.ComputingUnits.NeuronFC;
 import SimpleClasses.Signal;
 
 import java.io.File;
@@ -132,7 +133,7 @@ public class ConverterText {
     private Signal padSignal(Signal input) {
         if(input.fullSize() > maxlen){
             var mass = input.getCloneSignals();
-            List<Neuron> list = new ArrayList<Neuron>(Arrays.asList(mass));
+            List<INeuron> list = new ArrayList(Arrays.asList(mass));
             while(list.size() != maxlen){
                 list.remove(list.size() - 1);
             }
@@ -140,9 +141,9 @@ public class ConverterText {
         }
         if(input.fullSize() < maxlen){
             var mass = input.getCloneSignals();
-            List<Neuron> list = new ArrayList<Neuron>(Arrays.asList(mass));
+            List<INeuron> list = new ArrayList(Arrays.asList(mass));
             while(list.size() < maxlen){
-                list.add(new Neuron(0));
+                list.add(new NeuronFC(0));
             }
             return new Signal(list, input.right);
         }

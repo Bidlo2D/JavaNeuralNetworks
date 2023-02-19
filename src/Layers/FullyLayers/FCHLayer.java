@@ -1,21 +1,39 @@
 package Layers.FullyLayers;
-
 import Collector.Initializations.Generation;
 import Layers.Activation.Functions.Function;
 import Layers.Activation.Functions.Softmax;
 import Layers.Layer;
-import SimpleClasses.Neuron;
+import SimpleClasses.ComputingUnits.NeuronFC;
+import SimpleClasses.ComputingUnits.NeuronWTA;
 import SimpleClasses.Signal;
 import SimpleClasses.Weight;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class FCHLayer extends Layer {
+    protected Signal<NeuronFC> output;
     protected Weight weights;
     protected Signal biases;
     protected Signal corrections;
+    protected Signal deltaOutput;
     public int countNeurons;
     public FCHLayer(int countNeurons, Function typeActivation){
         this.countNeurons = countNeurons;
         this.typeActivation = typeActivation;
+    }
+
+    @Override
+    public List<Double> getWeightList() {
+        List<Double> weightsList = new ArrayList<>();
+        for (int w1 = 0; w1 < weights.n; w1++)
+        {
+            for (int w2 = 0; w2 < weights.m; w2++)
+            {
+                weightsList.add(weights.getWeight(w1, w2));
+            }
+        }
+        return  weightsList;
     }
 
     @Override
@@ -27,15 +45,13 @@ public class FCHLayer extends Layer {
            output == null) { initialization(); }
         for (int w1 = 0; w1 < weights.n; w1++)
         {
-            Neuron Sum = new Neuron();
-            Sum.setValue(biases.getValueSignal(w1, 0, 0));
+            double Sum = biases.getValueSignal(w1, 0, 0);
             for (int w2 = 0; w2 < weights.m; w2++)
             {
-                double plus = input.getValueSignal(w2, 0, 0) * weights.getWeight(w1, w2);
-                Sum.setValue(Sum.getValue() + plus);
+                Sum += input.getValueSignal(w2, 0, 0) * weights.getWeight(w1, w2);
             }
 
-            output.setSignal(w1, 0, 0, Sum);
+            output.setValueSignal(w1, 0, 0, Sum);
         }
         activation(output);
         return output;
@@ -50,40 +66,39 @@ public class FCHLayer extends Layer {
     }
 
     @Override
-    public Signal backPropagationTeacher(Signal delta, int right, double E, double A) {
-        Signal deltaOutput = new Signal(input.sizeZ, input.sizeX, input.sizeY, true);
-        for (int i = 0; i < weights.n; i++)
+    public Signal backPropagation(Signal delta, int right, double E, double A) {
+        for (int w1 = 0; w1 < weights.n; w1++)
         {
             double df = 0;
-            for (int j = 0; j < weights.m; j++)
+            for (int w2 = 0; w2 < weights.m; w2++)
             {
-                double derivative = typeActivation.Derivative(input.getSignal(j, 0, 0));
-                df += derivative * delta.getValueSignal(i, 0, 0);
-                double gradient = (derivative * (weights.getWeight(i, j) * delta.getValueSignal(i, 0, 0)));
-                deltaOutput.setValueSignal(j, 0, 0, gradient + deltaOutput.getValueSignal(j, 0, 0));
-                double GRADw = input.getValueSignal(j, 0, 0) * delta.getValueSignal(i, 0, 0);
-                double gradientNext = E * GRADw + A * corrections.getValueSignal(i, 0, 0);
-                corrections.setValueSignal(i, 0, 0, gradientNext);
-                weights.setWeight(i, j, weights.getWeight(i, j) + corrections.getValueSignal(i, 0, 0));
+                double derivative = typeActivation.Derivative(input.getSignal(w2, 0, 0));
+                df += derivative * delta.getValueSignal(w1, 0, 0);
+                double gradient = (derivative * (weights.getWeight(w1, w2) * delta.getValueSignal(w1, 0, 0)));
+                deltaOutput.setValueSignal(w2, 0, 0, gradient + deltaOutput.getValueSignal(w2, 0, 0));
+                double GRADw = input.getValueSignal(w2, 0, 0) * delta.getValueSignal(w1, 0, 0);
+                double gradientNext = E * GRADw + A * corrections.getValueSignal(w1, 0, 0);
+                corrections.setValueSignal(w1, 0, 0, gradientNext);
+                weights.setWeight(w1, w2, weights.getWeight(w1, w2) + corrections.getValueSignal(w1, 0, 0));
             }
-            biases.setValueSignal(i, 0, 0, (df * E) + biases.getValueSignal(i, 0, 0));
+            biases.setValueSignal(w1, 0, 0, (df * E) + biases.getValueSignal(w1, 0, 0));
         }
         return deltaOutput;
     }
 
-    @Override
-    public Signal backPropagationNoTeacher(Signal delta, double E, double A) {
+    public Signal backPropagation(Signal delta, double E, double A){
         return null;
     }
 
     protected void initialization() {
         int sizeZ = input.fullSize();
-        output = new Signal(countNeurons, 1, 1, false);
+        output = new Signal(countNeurons, 1, 1);
+        deltaOutput = new Signal(input.sizeZ, input.sizeX, input.sizeY);
         if(typeActivation.getClass().getSimpleName().equals("Softmax")){
             Softmax castedDog = (Softmax) typeActivation;
             castedDog.output = output;
         }
-        corrections = new Signal(countNeurons, 1,1, true);
+        corrections = new Signal(countNeurons, 1,1);
         biases = Generation.RandomSignal(countNeurons, 1 , 1 , 0, 0, 0.1);
         weights = Generation.RandomWeight(countNeurons, sizeZ, -0.05, 0.05);
     }

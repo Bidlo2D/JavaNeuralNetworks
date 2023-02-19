@@ -14,15 +14,21 @@ public class Network implements Serializable {
     private double L_rate = 0.01;
     private final double A_rate = 0.3;
     private int epoth = 10;
+    private int currentEpoth;
+    private double currentAnswer;
     private List<Layer> NeuralNetwork = new ArrayList();
+    private List<Double> graphInfo = new ArrayList();
 
-    public void SetEpoth (int epoth) { this.epoth = epoth; }
-    public void SetLearnRate (double L_rate) { this.L_rate = L_rate; }
-    public void AddLayer (Layer layer) { if(!NeuralNetwork.contains(layer)) { NeuralNetwork.add(layer); } }
-    public void RemoveLayer (Layer layer) { NeuralNetwork.remove(layer); }
+    public void setEpoth(int epoth) { this.epoth = epoth; }
+    public int getEpoth () { return epoth; }
+    public int getCurrentEpoth () { return currentEpoth; }
+    public List<Double> getGraphInfo () { return graphInfo; }
+    public void setLearnRate(double L_rate) { this.L_rate = L_rate; }
+    public void addLayer(Layer layer) { if(!NeuralNetwork.contains(layer)) { NeuralNetwork.add(layer); } }
+    public void removeLayer(Layer layer) { NeuralNetwork.remove(layer); }
 
     public void Train(Batch input) {
-        for(int e = 0; e < epoth; e++){
+        for(currentEpoth = 0; currentEpoth < epoth; currentEpoth++){
             long start = System.currentTimeMillis();
             for(int b = 0; b < input.miniBatches.size(); b++){
                 for(int m = 0; m < input.miniBatches.get(b).signals.size(); m++) {
@@ -32,9 +38,11 @@ public class Network implements Serializable {
             }
             long finish = System.currentTimeMillis();
             long elapsed = finish - start;
-            System.out.println("epoth - " + (e + 1) + ", time - " + elapsed / 1000 + "c");
+            System.out.println("epoth - " + (currentEpoth + 1) + ", time - " + elapsed / 1000 + "c");
         }
+        graphInfo.addAll(NeuralNetwork.get(NeuralNetwork.size() - 1).getWeightList());
     }
+
     public List<Map<Integer, Double>> Test(Batch input) {
         List<Map<Integer, Double>> answers = new ArrayList();
         for(int b = 0; b < input.miniBatches.size(); b++) {
@@ -56,7 +64,7 @@ public class Network implements Serializable {
     private void BackPropagationLayers(int right) {
         Signal delta = new Signal();
         for(int l = NeuralNetwork.size() - 1; l >= 0; l--) {
-            delta = NeuralNetwork.get(l).backPropagationTeacher(delta, right, L_rate, A_rate);
+            delta = NeuralNetwork.get(l).backPropagation(delta, right, L_rate, A_rate);
         }
     }
 }

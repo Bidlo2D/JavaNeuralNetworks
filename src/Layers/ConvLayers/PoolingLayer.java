@@ -5,13 +5,21 @@ import Layers.Layer;
 import SimpleClasses.Signal;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class PoolingLayer extends Layer {
     private Signal mask;
     private int scale = 2;
+
     public PoolingLayer(int scale){
         this.scale = scale;
     }
+
+    @Override
+    public List<Double> getWeightList() {
+        return  null;
+    }
+
     @Override
     public Signal forward(Signal input) {
         this.input = input;
@@ -54,8 +62,8 @@ public class PoolingLayer extends Layer {
     }
 
     @Override
-    public Signal backPropagationTeacher(Signal delta, int Right, double E, double A) {
-        Signal deltaOutput = new Signal(input.sizeZ, input.sizeX, input.sizeY, true); // создаём тензор для градиентов
+    public Signal backPropagation(Signal delta, int right, double E, double A) {
+        Signal deltaOutput = new Signal(input.sizeZ, input.sizeX, input.sizeY); // создаём тензор для градиентов
 
         for (int d = 0; d < input.sizeZ; d++)
             for (int i = 0; i < input.sizeX; i++)
@@ -69,13 +77,13 @@ public class PoolingLayer extends Layer {
         return deltaOutput; // возвращаем посчитанные градиенты
     }
 
-    @Override
-    public Signal backPropagationNoTeacher(Signal delta, double E, double A) {
+    public Signal backPropagation(Signal delta, double E, double A){
         return null;
     }
 
+
     private void Initialization(Signal input) {
-        output = new Signal(input.sizeZ, input.sizeX / scale, input.sizeY / scale, true);
-        mask = new Signal(input.sizeZ, input.sizeX, input.sizeY, true);
+        output = new Signal(input.sizeZ, input.sizeX / scale, input.sizeY / scale);
+        mask = new Signal(input.sizeZ, input.sizeX, input.sizeY);
     }
 }
