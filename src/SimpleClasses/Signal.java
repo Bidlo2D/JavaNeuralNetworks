@@ -1,9 +1,13 @@
 package SimpleClasses;
 
 import SimpleClasses.ComputingUnits.INeuron;
+import SimpleClasses.ComputingUnits.Neuron;
 import SimpleClasses.ComputingUnits.NeuronFC;
 
 import java.io.Serializable;
+import java.lang.reflect.Array;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Type;
 import java.util.*;
 
 public class Signal<T extends INeuron> implements Serializable {
@@ -53,7 +57,7 @@ public class Signal<T extends INeuron> implements Serializable {
      public void setValueVector(List<Double> list){
           if(list.size() != sizeZ){ return; }
           for(int i = 0; i < list.size(); i++){
-               neurons[i] = (T) new NeuronFC(list.get(i));
+               neurons[i] = (T) new Neuron(list.get(i));
           }
      }
      //IndexOf
@@ -63,12 +67,19 @@ public class Signal<T extends INeuron> implements Serializable {
      // Actions
      public void allZero(){ Arrays.stream(neurons).forEach(n -> n.setValue(0)); }
 
-     public void fill(){
+     private void fill(){
           neurons = (T[]) new INeuron[fullSize()];
-          var s = neurons.getClass().getComponentType();
 
-          for (int i = 0; i <  neurons.length; i++) {
-               neurons[i] = (T) new NeuronFC(0);
+          for (int i = 0; i < neurons.length; i++) {
+               neurons[i] = ((T) new Neuron(0));
+          }
+     }
+
+     private void fill(Class<INeuron> clazz) throws InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+          neurons = (T[]) Array.newInstance(clazz, fullSize());
+
+          for (int i = 0; i < neurons.length; i++) {
+               neurons[i] = (T) clazz.getDeclaredConstructor().newInstance();
           }
      }
      // Constructors
@@ -92,6 +103,13 @@ public class Signal<T extends INeuron> implements Serializable {
      public Signal(int z, int x, int y) {
           this.sizeZ = z; this.sizeX = x; this.sizeY = y;
           fill();
+     }
+
+     public Signal(Class<INeuron> clazz, int z, int x, int y) throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+          this.sizeZ = z;
+          this.sizeX = x;
+          this.sizeY = y;
+          fill(clazz);
      }
 
      public Signal(int z, int x, int y, int right) {

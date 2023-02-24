@@ -2,8 +2,7 @@ package SimpleClasses.ComputingUnits;
 
 import java.io.Serializable;
 
-public class NeuronFC implements Serializable, INeuron {
-    protected double value;
+public class NeuronFC extends Neuron implements Serializable {
 
     private boolean drop = false;
 
@@ -14,13 +13,4 @@ public class NeuronFC implements Serializable, INeuron {
     public NeuronFC(){ }
     public NeuronFC(double value){ this.value = value; }
 
-    @Override
-    public void setValue(double value) {
-        this.value = value;
-    }
-
-    @Override
-    public double getValue() {
-        return value;
-    }
 }

@@ -7,6 +7,8 @@ import Layers.FullyLayers.FCCLayer;
 import Layers.FullyLayers.FCHLayer;
 import Layers.RecurrentLayers.RecurrentLayer;
 import Layers.WTA.WTALayer;
+import SimpleClasses.ComputingUnits.Neuron;
+import SimpleClasses.ComputingUnits.NeuronWTA;
 import SimpleClasses.Dates.Batch;
 import SimpleClasses.Dates.Converters.ConverterText;
 import SimpleClasses.Dates.Converters.Enums.LanguageStemmer;
@@ -18,11 +20,13 @@ import SimpleClasses.Signal;
 import SimpleClasses.Visual.GraphPanel;
 
 import java.io.*;
+import java.lang.reflect.Array;
+import java.lang.reflect.InvocationTargetException;
 import java.text.DecimalFormat;
 import java.util.*;
 
 public class Main {
-    public static void main (String[] args) throws NoDirectoryException, IOException, ClassNotFoundException {
+    public static void main (String[] args) throws NoDirectoryException, IOException, ClassNotFoundException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         int maxlen = 200;
         var convText  = new ConverterText("C:\\Games\\Programs\\DataSets\\TextNet\\Texts",
                 TokenType.Word, LanguageStemmer.EN, new RangeNorm(-1.0, 1.0), maxlen);

@@ -3,8 +3,7 @@ package SimpleClasses.ComputingUnits;
 import java.io.Serializable;
 
 
-public class NeuronWTA implements Serializable, INeuron {
-    private double value;
+public class NeuronWTA extends Neuron implements Serializable {
 
     private int wins;
 

@@ -4,6 +4,7 @@ import Layers.FullyLayers.FCHLayer;
 import SimpleClasses.ComputingUnits.NeuronFC;
 import SimpleClasses.Signal;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 
 public class RecurrentLayer extends FCHLayer {
@@ -12,7 +13,7 @@ public class RecurrentLayer extends FCHLayer {
     }
     private Signal memorySignal;
     @Override
-    public Signal forward(Signal input) {
+    public Signal forward(Signal input) throws ClassNotFoundException, InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchMethodException {
         this.input = input;
         if(weights == null ||
                 biases == null ||
@@ -49,7 +50,7 @@ public class RecurrentLayer extends FCHLayer {
         return X;
     }
 
-    protected void initialization() {
+    protected void initialization() throws ClassNotFoundException, InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchMethodException {
         super.initialization();
         memorySignal = new Signal(output.sizeZ, output.sizeX, output.sizeY);
     }

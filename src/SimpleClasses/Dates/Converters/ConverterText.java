@@ -28,12 +28,14 @@ public class ConverterText {
     private TokenType type;
     private LanguageStemmer language;
     private RangeNorm range;
+    private Class clazz;
 
-    public ConverterText(String pathDir, TokenType type, LanguageStemmer language, RangeNorm range, int maxlen) throws NoDirectoryException {
+    public ConverterText(String pathDir, TokenType type, LanguageStemmer language, RangeNorm range, int maxlen) throws NoDirectoryException, ClassNotFoundException {
         this.type = type;
         this.maxlen = maxlen;
         this.language = language;
         this.range = range;
+        //this.clazz = Class.forName("SimpleClasses.ComputingUnits.Neuron");
         TypeStemmer();
         File dir = new File(pathDir);
         if (!dir.isDirectory()) {

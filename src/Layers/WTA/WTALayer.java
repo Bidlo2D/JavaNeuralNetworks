@@ -8,10 +8,11 @@ import SimpleClasses.ComputingUnits.NeuronFC;
 import SimpleClasses.ComputingUnits.NeuronWTA;
 import SimpleClasses.Signal;
 
+import java.lang.reflect.InvocationTargetException;
+
 public class WTALayer extends FCHLayer {
     protected Signal<NeuronWTA> output;
     protected double loss = 0;
-    //private Network sourceNet;
 
     public WTALayer(int countNeurons, Function typeActivation) {
         super(countNeurons, typeActivation);
@@ -19,7 +20,7 @@ public class WTALayer extends FCHLayer {
     }
 
     @Override
-    public Signal forward(Signal input) {
+    public Signal forward(Signal input) throws ClassNotFoundException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         this.input = input;
         if(weights == null ||
                 biases == null ||
@@ -72,9 +73,10 @@ public class WTALayer extends FCHLayer {
     }
 
     @Override
-    protected void initialization() {
+    protected void initialization() throws ClassNotFoundException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         int sizeZ = input.fullSize();
-        output = new Signal(countNeurons, 1, 1);
+        Class s = Class.forName("SimpleClasses.ComputingUnits.NeuronWTA");
+        output = new Signal(s, countNeurons, 1, 1);
         deltaOutput = new Signal(input.sizeZ, input.sizeX, input.sizeY);
         if(typeActivation.getClass().getSimpleName().equals("Softmax")){
             Softmax castedDog = (Softmax) typeActivation;

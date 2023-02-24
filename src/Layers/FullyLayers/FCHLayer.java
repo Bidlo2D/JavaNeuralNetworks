@@ -8,6 +8,7 @@ import SimpleClasses.ComputingUnits.NeuronWTA;
 import SimpleClasses.Signal;
 import SimpleClasses.Weight;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,7 +38,7 @@ public class FCHLayer extends Layer {
     }
 
     @Override
-    public Signal forward(Signal input) {
+    public Signal forward(Signal input) throws ClassNotFoundException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         this.input = input;
         if(weights == null ||
            biases == null ||
@@ -90,7 +91,7 @@ public class FCHLayer extends Layer {
         return null;
     }
 
-    protected void initialization() {
+    protected void initialization() throws ClassNotFoundException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         int sizeZ = input.fullSize();
         output = new Signal(countNeurons, 1, 1);
         deltaOutput = new Signal(input.sizeZ, input.sizeX, input.sizeY);

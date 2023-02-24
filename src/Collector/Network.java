@@ -5,6 +5,7 @@ import SimpleClasses.Dates.Batch;
 import SimpleClasses.Signal;
 
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +28,7 @@ public class Network implements Serializable {
     public void addLayer(Layer layer) { if(!NeuralNetwork.contains(layer)) { NeuralNetwork.add(layer); } }
     public void removeLayer(Layer layer) { NeuralNetwork.remove(layer); }
 
-    public void Train(Batch input) {
+    public void Train(Batch input) throws ClassNotFoundException, InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchMethodException {
         for(currentEpoth = 0; currentEpoth < epoth; currentEpoth++){
             long start = System.currentTimeMillis();
             for(int b = 0; b < input.miniBatches.size(); b++){
@@ -43,7 +44,7 @@ public class Network implements Serializable {
         graphInfo.addAll(NeuralNetwork.get(NeuralNetwork.size() - 1).getWeightList());
     }
 
-    public List<Map<Integer, Double>> Test(Batch input) {
+    public List<Map<Integer, Double>> Test(Batch input) throws ClassNotFoundException, InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchMethodException {
         List<Map<Integer, Double>> answers = new ArrayList();
         for(int b = 0; b < input.miniBatches.size(); b++) {
             for(int m = 0; m < input.miniBatches.get(b).signals.size(); m++) {
@@ -53,7 +54,7 @@ public class Network implements Serializable {
         return answers;
     }
 
-    private Map<Integer, Double> ForwardLayers(Signal signal){
+    private Map<Integer, Double> ForwardLayers(Signal signal) throws ClassNotFoundException, InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchMethodException {
         for(int l = 0; l < NeuralNetwork.size(); l++) {
             signal = NeuralNetwork.get(l).forward(signal);
         }

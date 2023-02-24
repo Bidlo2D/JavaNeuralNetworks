@@ -1,10 +1,7 @@
 package Layers.ConvLayers;
 
-import Layers.Enums.TypeLayer;
 import Layers.Layer;
 import SimpleClasses.Signal;
-
-import java.io.Serializable;
 import java.util.List;
 
 public class PoolingLayer extends Layer {
