@@ -1,8 +1,10 @@
 package Collector;
 
 import Layers.Layer;
+import Layers.WTA.WTALayer;
 import SimpleClasses.Dates.Batch;
 import SimpleClasses.Signal;
+import SimpleClasses.Weight;
 
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
@@ -18,12 +20,15 @@ public class Network implements Serializable {
     private int currentEpoth;
     private double currentAnswer;
     private List<Layer> NeuralNetwork = new ArrayList();
-    private List<Double> graphInfo = new ArrayList();
+    //private Weight graphInfo;
 
     public void setEpoth(int epoth) { this.epoth = epoth; }
     public int getEpoth () { return epoth; }
     public int getCurrentEpoth () { return currentEpoth; }
-    public List<Double> getGraphInfo () { return graphInfo; }
+    public Weight getGraphInfo () {
+        var WTA = (WTALayer) NeuralNetwork.get(0);
+        return WTA.getWeight();
+    }
     public void setLearnRate(double L_rate) { this.L_rate = L_rate; }
     public void addLayer(Layer layer) { if(!NeuralNetwork.contains(layer)) { NeuralNetwork.add(layer); } }
     public void removeLayer(Layer layer) { NeuralNetwork.remove(layer); }
@@ -41,7 +46,7 @@ public class Network implements Serializable {
             long elapsed = finish - start;
             System.out.println("epoth - " + (currentEpoth + 1) + ", time - " + elapsed / 1000 + "c");
         }
-        graphInfo.addAll(NeuralNetwork.get(NeuralNetwork.size() - 1).getWeightList());
+        //graphInfo.addAll(NeuralNetwork.get(NeuralNetwork.size() - 1).getWeightList());
     }
 
     public List<Map<Integer, Double>> Test(Batch input) throws ClassNotFoundException, InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchMethodException {

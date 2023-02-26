@@ -8,5 +8,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="eurodyn.qlack.util.fileutils" level="project" />
+    <orderEntry type="library" name="cosium.code.google.java.format" level="project" />
+    <orderEntry type="library" name="xchart-3.8.2" level="project" />
   </component>
 </module>

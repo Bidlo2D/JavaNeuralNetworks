@@ -60,6 +60,13 @@ public class Signal<T extends INeuron> implements Serializable {
                neurons[i] = (T) new Neuron(list.get(i));
           }
      }
+     public List<Double> getValueVector(){
+          List<Double> list = new ArrayList<>();
+          for(int i = 0; i < neurons.length; i++){
+               list.add(neurons[i].getValue());
+          }
+          return list;
+     }
      //IndexOf
      public int indexOf(INeuron x){
           return Arrays.asList(neurons).indexOf(x);

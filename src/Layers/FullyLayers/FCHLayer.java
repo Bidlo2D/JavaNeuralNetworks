@@ -93,7 +93,8 @@ public class FCHLayer extends Layer {
 
     protected void initialization() throws ClassNotFoundException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         int sizeZ = input.fullSize();
-        output = new Signal(countNeurons, 1, 1);
+        Class s = Class.forName("SimpleClasses.ComputingUnits.NeuronFC");
+        output = new Signal(s, countNeurons, 1, 1);
         deltaOutput = new Signal(input.sizeZ, input.sizeX, input.sizeY);
         if(typeActivation.getClass().getSimpleName().equals("Softmax")){
             Softmax castedDog = (Softmax) typeActivation;

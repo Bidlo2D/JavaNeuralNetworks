@@ -33,4 +33,15 @@ public class Batch implements Serializable  {
         System.out.println();
     }
 
+    public List<Double> FlatBatch(){
+        List<Double> list = new ArrayList<>();
+        for(int m = 0; m < miniBatches.size(); m++) {
+            for(int s = 0; s < miniBatches.get(m).signals.size(); s++){
+                var values = miniBatches.get(m).signals.get(s).getValueVector();
+                list.addAll(values);
+            }
+        }
+        return list;
+    }
+
 }

@@ -1,7 +1,9 @@
 package SimpleClasses;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class Weight implements Serializable {
     // Data
@@ -24,6 +26,15 @@ public class Weight implements Serializable {
     // Indexer
     public double getWeight(int x, int y){
         return matrix[x][y];
+    }
+    public List<Double> getFlat(){
+        List<Double> list = new ArrayList<>();
+        for(int w1 = 0; w1 < n; w1++) {
+            for(int w2 = 0; w2 < m; w2++){
+                list.add(getWeight(w1, w2));
+            }
+        }
+        return list;
     }
     public void setWeight(int x, int y, double value){
         matrix[x][y] = value;

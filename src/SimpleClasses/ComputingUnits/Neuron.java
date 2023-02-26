@@ -16,6 +16,6 @@ public class Neuron implements INeuron {
 
     @Override
     public double getValue() {
-        return 0;
+        return value;
     }
 }

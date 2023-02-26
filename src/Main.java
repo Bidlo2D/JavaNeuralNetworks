@@ -7,36 +7,38 @@ import Layers.FullyLayers.FCCLayer;
 import Layers.FullyLayers.FCHLayer;
 import Layers.RecurrentLayers.RecurrentLayer;
 import Layers.WTA.WTALayer;
-import SimpleClasses.ComputingUnits.Neuron;
-import SimpleClasses.ComputingUnits.NeuronWTA;
 import SimpleClasses.Dates.Batch;
-import SimpleClasses.Dates.Converters.ConverterText;
-import SimpleClasses.Dates.Converters.Enums.LanguageStemmer;
-import SimpleClasses.Dates.Converters.Enums.TokenType;
 import SimpleClasses.Dates.Converters.Exceptions.NoDirectoryException;
-import SimpleClasses.Dates.Converters.Other.RangeNorm;
 import SimpleClasses.Dates.MiniBatch;
 import SimpleClasses.Signal;
-import SimpleClasses.Visual.GraphPanel;
+import org.knowm.xchart.QuickChart;
+import org.knowm.xchart.SwingWrapper;
+import org.knowm.xchart.XYChart;
 
 import java.io.*;
-import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.text.DecimalFormat;
 import java.util.*;
 
 public class Main {
     public static void main (String[] args) throws NoDirectoryException, IOException, ClassNotFoundException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-        int maxlen = 200;
+/*        int maxlen = 200;
         var convText  = new ConverterText("C:\\Games\\Programs\\DataSets\\TextNet\\Texts",
                 TokenType.Word, LanguageStemmer.EN, new RangeNorm(-1.0, 1.0), maxlen);
-        var batch = new Batch(convText.dates, 1);
-        //var net = CreateTestText();
+        var batch = new Batch(convText.dates, 1);*/
+        var batch = TestDataClasses(2);
+        var net = CreateTestText();
+        net.Train(batch);
+        //var result = net.getGraphInfo();
+        //var result = net.Test(batch);
         //ShowResult(result);
-        //GraphPanel draw = new GraphPanel(net.getGraphInfo());
-        //draw.paint();
-        WTALayer WTALayer1= new WTALayer(80, new Sigmoid());
-        WTALayer1.forward(batch.miniBatches.get(0).signals.get(0));
+        //GraphPanel draw = new GraphPanel(net.getGraphInfo().getFlat());
+        double[] xData = new double[] { 0.0, 1.0, 2.0 };
+        double[] yData = new double[] { 2.0, 1.0, 0.0 };
+        XYChart chart = QuickChart.getChart("Sample Chart", "X", "Y", "y(x)", xData, yData);
+        new SwingWrapper(chart).displayChart();
+        //WTALayer WTALayer1= new WTALayer(5, new Sigmoid());
+        //WTALayer1.forward(batch.miniBatches.get(0).signals.get(0));
         System.out.println("END");
     }
 
@@ -44,7 +46,7 @@ public class Main {
         int classes = 2;
         Network net = new Network();
         EmbeddingLayer layerE = new EmbeddingLayer(30, new Tangent());
-        WTALayer layerWTA = new WTALayer(15, new Tangent());
+        WTALayer layerWTA = new WTALayer(4, new Tangent());
         RecurrentLayer layerR1 = new RecurrentLayer(30, new Tangent());
         FCHLayer layerFCH1 = new FCHLayer(80, new Sigmoid());
         FCHLayer layerFCH2 = new FCHLayer(80, new Sigmoid());
@@ -61,7 +63,7 @@ public class Main {
         // 3
         //net.AddLayer(layerC);
         // Settings
-        net.setEpoth(100);
+        net.setEpoth(320);
         net.setLearnRate(0.0915);
         return net;
     }
@@ -133,9 +135,11 @@ public class Main {
         for (int i = 0; i < classes; i++){
             MiniBatch mini = new MiniBatch();
 
-            Signal signal = new Signal(1,1,1, i);
-            double value = rnd.nextDouble(0, 1);
-            signal.setValueSignal(0,0,0, value);
+            Signal signal = new Signal(2,1,1, i);
+            for(int s = 0; s < signal.fullSize(); s++){
+                double value = rnd.nextDouble(-1, 1);
+                signal.setValueSignal(s,0,0, value);
+            }
 
             mini.signals.add(signal);
 
