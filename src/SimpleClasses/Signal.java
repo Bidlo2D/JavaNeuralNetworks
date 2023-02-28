@@ -99,6 +99,16 @@ public class Signal<T extends INeuron> implements Serializable {
           neurons = (T[]) list.toArray(INeuron[]::new);
      }
 
+     public Signal(double... params) {
+          this.sizeZ = params.length;
+          this.sizeX = 1;
+          this.sizeY = 1;
+          fill();
+          for(int i = 0; i < neurons.length; i++){
+               neurons[i].setValue(params[i]);
+          }
+     }
+
      public Signal(List<INeuron> list, int right) {
           this.sizeZ = list.size();
           this.sizeX = 1;

@@ -1,5 +1,5 @@
 package Layers.RecurrentLayers;
-import Layers.Activation.Functions.Function;
+import Layers.Functions.Function;
 import Layers.FullyLayers.FCHLayer;
 import SimpleClasses.ComputingUnits.NeuronFC;
 import SimpleClasses.Signal;

@@ -1,10 +1,9 @@
 package Layers.FullyLayers;
 import Collector.Initializations.Generation;
-import Layers.Activation.Functions.Function;
-import Layers.Activation.Functions.Softmax;
+import Layers.Functions.Function;
+import Layers.Functions.Activation.Softmax;
 import Layers.Layer;
 import SimpleClasses.ComputingUnits.NeuronFC;
-import SimpleClasses.ComputingUnits.NeuronWTA;
 import SimpleClasses.Signal;
 import SimpleClasses.Weight;
 
@@ -19,6 +18,7 @@ public class FCHLayer extends Layer {
     protected Signal corrections;
     protected Signal deltaOutput;
     public int countNeurons;
+
     public FCHLayer(int countNeurons, Function typeActivation){
         this.countNeurons = countNeurons;
         this.typeActivation = typeActivation;
@@ -61,7 +61,7 @@ public class FCHLayer extends Layer {
     protected void activation(Signal activation) {
         for (int i = 0; i < activation.fullSize(); i++)
         {
-            double result = typeActivation.Activation(activation.getSignal(i, 0, 0));
+            double result = typeActivation.activation(activation.getSignal(i, 0, 0));
             activation.setValueSignal(i, 0, 0, result);
         }
     }
@@ -73,7 +73,7 @@ public class FCHLayer extends Layer {
             double df = 0;
             for (int w2 = 0; w2 < weights.m; w2++)
             {
-                double derivative = typeActivation.Derivative(input.getSignal(w2, 0, 0));
+                double derivative = typeActivation.derivative(input.getSignal(w2, 0, 0));
                 df += derivative * delta.getValueSignal(w1, 0, 0);
                 double gradient = (derivative * (weights.getWeight(w1, w2) * delta.getValueSignal(w1, 0, 0)));
                 deltaOutput.setValueSignal(w2, 0, 0, gradient + deltaOutput.getValueSignal(w2, 0, 0));
@@ -86,6 +86,7 @@ public class FCHLayer extends Layer {
         }
         return deltaOutput;
     }
+
 
     public Signal backPropagation(Signal delta, double E, double A){
         return null;

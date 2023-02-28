@@ -27,12 +27,21 @@ public class Weight implements Serializable {
     public double getWeight(int x, int y){
         return matrix[x][y];
     }
+
     public List<Double> getFlat(){
         List<Double> list = new ArrayList<>();
         for(int w1 = 0; w1 < n; w1++) {
             for(int w2 = 0; w2 < m; w2++){
                 list.add(getWeight(w1, w2));
             }
+        }
+        return list;
+    }
+
+    public List<Double> getWeightByParam(int param){
+        List<Double> list = new ArrayList<>();
+        for(int w1 = 0; w1 < n; w1++) {
+            list.add(getWeight(w1, param));
         }
         return list;
     }

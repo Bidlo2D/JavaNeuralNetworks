@@ -1,7 +1,7 @@
 package Collector;
 
 import Layers.Layer;
-import Layers.WTA.WTALayer;
+import Layers.Kohonen.KohonenLayer;
 import SimpleClasses.Dates.Batch;
 import SimpleClasses.Signal;
 import SimpleClasses.Weight;
@@ -18,15 +18,14 @@ public class Network implements Serializable {
     private final double A_rate = 0.3;
     private int epoth = 10;
     private int currentEpoth;
-    private double currentAnswer;
     private List<Layer> NeuralNetwork = new ArrayList();
+    public static int iteration;
     //private Weight graphInfo;
 
     public void setEpoth(int epoth) { this.epoth = epoth; }
     public int getEpoth () { return epoth; }
-    public int getCurrentEpoth () { return currentEpoth; }
-    public Weight getGraphInfo () {
-        var WTA = (WTALayer) NeuralNetwork.get(0);
+    public Weight getWeightLayer(int index) {
+        var WTA = (KohonenLayer) NeuralNetwork.get(index);
         return WTA.getWeight();
     }
     public void setLearnRate(double L_rate) { this.L_rate = L_rate; }
@@ -34,19 +33,20 @@ public class Network implements Serializable {
     public void removeLayer(Layer layer) { NeuralNetwork.remove(layer); }
 
     public void Train(Batch input) throws ClassNotFoundException, InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchMethodException {
+        iteration = 0;
         for(currentEpoth = 0; currentEpoth < epoth; currentEpoth++){
             long start = System.currentTimeMillis();
             for(int b = 0; b < input.miniBatches.size(); b++){
                 for(int m = 0; m < input.miniBatches.get(b).signals.size(); m++) {
                     ForwardLayers(input.miniBatches.get(b).signals.get(m));
                     BackPropagationLayers(input.miniBatches.get(b).signals.get(m).right);
+                    iteration++;
                 }
             }
             long finish = System.currentTimeMillis();
             long elapsed = finish - start;
             System.out.println("epoth - " + (currentEpoth + 1) + ", time - " + elapsed / 1000 + "c");
         }
-        //graphInfo.addAll(NeuralNetwork.get(NeuralNetwork.size() - 1).getWeightList());
     }
 
     public List<Map<Integer, Double>> Test(Batch input) throws ClassNotFoundException, InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchMethodException {

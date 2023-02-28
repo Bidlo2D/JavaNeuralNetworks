@@ -1,27 +1,26 @@
-package Layers.WTA;
+package Layers.Kohonen;
 import Collector.Initializations.Generation;
-import Collector.Network;
-import Layers.Activation.Functions.Function;
-import Layers.Activation.Functions.Softmax;
+import Layers.Functions.Function;
+import Layers.Functions.Activation.Softmax;
 import Layers.FullyLayers.FCHLayer;
-import SimpleClasses.ComputingUnits.INeuron;
-import SimpleClasses.ComputingUnits.NeuronFC;
+import Layers.Functions.Influence.Kohonen;
+import SimpleClasses.ComputingUnits.Neuron;
 import SimpleClasses.ComputingUnits.NeuronWTA;
 import SimpleClasses.Signal;
 import SimpleClasses.Weight;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
-public class WTALayer extends FCHLayer {
+public class KohonenLayer extends FCHLayer {
     protected Signal<NeuronWTA> output;
+    protected Signal<Neuron> distance;
+    protected Kohonen typeActivation;
     protected double loss = 0;
     private int indexWin;
 
-    public WTALayer(int countNeurons, Function typeActivation) {
-        super(countNeurons, typeActivation);
+    public KohonenLayer(int countNeurons, Kohonen typeInfluence) {
+        super(countNeurons, typeInfluence);
+        this.typeActivation = typeInfluence;
     }
 
     public Weight getWeight() {
@@ -37,62 +36,53 @@ public class WTALayer extends FCHLayer {
                 output == null) { initialization(); }
         for (int w1 = 0; w1 < weights.n; w1++)
         {
+            double Dis = 0;
             double Sum = biases.getValueSignal(w1, 0, 0);
             for (int w2 = 0; w2 < weights.m; w2++)
             {
                 Sum += input.getValueSignal(w2, 0, 0) * weights.getWeight(w1, w2);
-                //Sum += Math.pow(input.getValueSignal(w2, 0, 0) - weights.getWeight(w1, w2), 2);
+                Dis += Math.pow(input.getValueSignal(w2, 0, 0) - weights.getWeight(w1, w2), 2);
             }
 
-            //output.setValueSignal(w1, 0, 0, Math.sqrt(Sum));
+            distance.setValueSignal(w1, 0, 0, Math.sqrt(Dis));
             output.setValueSignal(w1, 0, 0, Sum);
         }
-        activation(output);
+        typeActivation.activation();
         return output;
     }
 
     @Override
-    protected void activation(Signal activation) {
-        var winner = output.max();
-        indexWin = output.indexOf(winner);
-        winner.win();
-        //output.allZero();
-        winner.setValue(1);
-    }
-
     public Signal backPropagation(Signal delta, int right, double E, double A) {
-        //delta = errorCounting();
-        //Signal deltaOutput = new Signal(input.sizeZ, input.sizeX, input.sizeY);
-        for (int w1 = 0; w1 <= indexWin; w1++)
+        for (int w1 = 0; w1 < weights.n; w1++)
         {
-            //double df = 0;
+            Neuron index = new Neuron(w1);
             for (int w2 = 0; w2 < weights.m; w2++)
             {
-                //df += weights.getWeight(w1, w2) * Math.exp(-sourceNet.getCurrentEpoth() / sourceNet.getEpoth());
                 double oldW = weights.getWeight(w1, w2);
-                double updateW = oldW + E * (input.getValueSignal(w2, 0 , 0) * A - oldW);
+                double updateW = oldW + E * typeActivation.derivative(index) * (input.getValueSignal(w2, 0 , 0) * A - oldW);
                 weights.setWeight(w1, w2, updateW);
             }
         }
         return null;
     }
 
-    protected Signal errorCounting() {
-        double error = 0; loss = 0;
-        Signal deltaOutput = new Signal(output.sizeZ, output.sizeX, output.sizeY);
-        return deltaOutput;
+/*    private double WTA(int index) {
+        return index != indexWin ? 0 : 1;
     }
+
+    private double WTM(double distance) {
+        return Math.exp(-Math.pow(distance, 2) / 2 * 0); // "TODO: Лямбда???"
+    }*/
 
     @Override
     protected void initialization() throws ClassNotFoundException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         int sizeZ = input.fullSize();
-        Class s = Class.forName("SimpleClasses.ComputingUnits.NeuronWTA");
-        output = new Signal(s, countNeurons, 1, 1);
+        Class o = Class.forName("SimpleClasses.ComputingUnits.NeuronWTA");
+        Class d = Class.forName("SimpleClasses.ComputingUnits.Neuron");
+        distance = new Signal(d, countNeurons, 1, 1);
+        output = new Signal(o, countNeurons, 1, 1);
         deltaOutput = new Signal(input.sizeZ, input.sizeX, input.sizeY);
-        if(typeActivation.getClass().getSimpleName().equals("Softmax")){
-            Softmax castedDog = (Softmax) typeActivation;
-            castedDog.output = output;
-        }
+        typeActivation.output = output;
         corrections = new Signal(countNeurons, 1,1);
         biases = Generation.RandomSignal(countNeurons, 1 , 1 , 0, 0, 0.1);
         weights = Generation.RandomWeight(countNeurons, sizeZ, -1, 1);

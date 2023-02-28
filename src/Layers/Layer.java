@@ -1,6 +1,6 @@
 package Layers;
 
-import Layers.Activation.Functions.Function;
+import Layers.Functions.Function;
 import SimpleClasses.ComputingUnits.INeuron;
 import SimpleClasses.Signal;
 

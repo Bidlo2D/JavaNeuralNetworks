@@ -1,6 +1,6 @@
 package Layers.FullyLayers;
 
-import Layers.Activation.Functions.Function;
+import Layers.Functions.Function;
 import SimpleClasses.Signal;
 
 public class FCCLayer extends FCHLayer {
@@ -25,13 +25,13 @@ public class FCCLayer extends FCHLayer {
             if (i == right)
             {
                 error = 1 - output.getValueSignal(i, 0, 0); //Подсчет ошибки(Положительный)
-                double dout = error * typeActivation.Derivative(output.getSignal(i, 0, 0));
+                double dout = error * typeActivation.derivative(output.getSignal(i, 0, 0));
                 deltaOutput.setValueSignal(i, 0, 0, dout);
             }
             else
             {
                 error = 0 - output.getValueSignal(i, 0, 0); //Подсчет ошибки(Отрицательный)
-                double dout = error * typeActivation.Derivative(output.getSignal(i, 0, 0));
+                double dout = error * typeActivation.derivative(output.getSignal(i, 0, 0));
                 deltaOutput.setValueSignal(i, 0, 0, dout);
             }
             loss += Math.pow(error, 2);

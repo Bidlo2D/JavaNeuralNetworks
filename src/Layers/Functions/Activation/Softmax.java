@@ -1,5 +1,6 @@
-package Layers.Activation.Functions;
+package Layers.Functions.Activation;
 
+import Layers.Functions.Function;
 import SimpleClasses.ComputingUnits.INeuron;
 import SimpleClasses.Signal;
 
@@ -7,7 +8,7 @@ public class Softmax extends Function {
     public Signal output = null;
 
     @Override
-    public double Activation(INeuron x) {
+    public double activation(INeuron x) {
         double numerator = Math.exp(x.getValue());
         double denominator = numerator;
         int index = output.indexOf(x);
@@ -22,8 +23,8 @@ public class Softmax extends Function {
         return numerator / denominator;
     }
     @Override
-    public double Derivative(INeuron x) {
-        double y = Activation(x);
+    public double derivative(INeuron x) {
+        double y = activation(x);
         return y * (1 - y);
     }
 }
