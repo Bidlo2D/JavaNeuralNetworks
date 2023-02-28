@@ -15,11 +15,11 @@ import java.util.Map;
 public class Network implements Serializable {
     private static final long serialVersionUID = 1L;
     private double L_rate = 0.01;
-    private final double A_rate = 0.3;
+    private final double A_rate = 0.85; // offset
     private int epoth = 10;
     private int currentEpoth;
     private List<Layer> NeuralNetwork = new ArrayList();
-    public static int iteration;
+    public static int iteration = 1;
     //private Weight graphInfo;
 
     public void setEpoth(int epoth) { this.epoth = epoth; }
@@ -33,7 +33,7 @@ public class Network implements Serializable {
     public void removeLayer(Layer layer) { NeuralNetwork.remove(layer); }
 
     public void Train(Batch input) throws ClassNotFoundException, InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchMethodException {
-        iteration = 0;
+        iteration = 1;
         for(currentEpoth = 0; currentEpoth < epoth; currentEpoth++){
             long start = System.currentTimeMillis();
             for(int b = 0; b < input.miniBatches.size(); b++){

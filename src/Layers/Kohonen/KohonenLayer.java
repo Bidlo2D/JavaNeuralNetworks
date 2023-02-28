@@ -1,5 +1,6 @@
 package Layers.Kohonen;
 import Collector.Initializations.Generation;
+import Collector.Network;
 import Layers.Functions.Function;
 import Layers.Functions.Activation.Softmax;
 import Layers.FullyLayers.FCHLayer;
@@ -13,9 +14,9 @@ import java.lang.reflect.InvocationTargetException;
 
 public class KohonenLayer extends FCHLayer {
     protected Signal<NeuronWTA> output;
-    protected Signal<Neuron> distance;
     protected Kohonen typeActivation;
     protected double loss = 0;
+    private double a = 0.0915;
     private int indexWin;
 
     public KohonenLayer(int countNeurons, Kohonen typeInfluence) {
@@ -36,15 +37,15 @@ public class KohonenLayer extends FCHLayer {
                 output == null) { initialization(); }
         for (int w1 = 0; w1 < weights.n; w1++)
         {
-            double Dis = 0;
+            //double Dis = 0;
             double Sum = biases.getValueSignal(w1, 0, 0);
             for (int w2 = 0; w2 < weights.m; w2++)
             {
                 Sum += input.getValueSignal(w2, 0, 0) * weights.getWeight(w1, w2);
-                Dis += Math.pow(input.getValueSignal(w2, 0, 0) - weights.getWeight(w1, w2), 2);
+                //Dis += Math.pow(input.getValueSignal(w2, 0, 0) - weights.getWeight(w1, w2), 2);
             }
 
-            distance.setValueSignal(w1, 0, 0, Math.sqrt(Dis));
+            //distance.setValueSignal(w1, 0, 0, Math.sqrt(Dis));
             output.setValueSignal(w1, 0, 0, Sum);
         }
         typeActivation.activation();
@@ -52,34 +53,26 @@ public class KohonenLayer extends FCHLayer {
     }
 
     @Override
-    public Signal backPropagation(Signal delta, int right, double E, double A) {
+    public Signal backPropagation(Signal delta, int right, double A, double B) {
         for (int w1 = 0; w1 < weights.n; w1++)
         {
-            Neuron index = new Neuron(w1);
             for (int w2 = 0; w2 < weights.m; w2++)
             {
                 double oldW = weights.getWeight(w1, w2);
-                double updateW = oldW + E * typeActivation.derivative(index) * (input.getValueSignal(w2, 0 , 0) * A - oldW);
+                double updateW = oldW + a * typeActivation.influence(w1) * (input.getValueSignal(w2, 0 , 0)  * B - oldW);
+                a = A / Network.iteration + B;
                 weights.setWeight(w1, w2, updateW);
             }
         }
         return null;
     }
 
-/*    private double WTA(int index) {
-        return index != indexWin ? 0 : 1;
-    }
-
-    private double WTM(double distance) {
-        return Math.exp(-Math.pow(distance, 2) / 2 * 0); // "TODO: Лямбда???"
-    }*/
-
     @Override
     protected void initialization() throws ClassNotFoundException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         int sizeZ = input.fullSize();
         Class o = Class.forName("SimpleClasses.ComputingUnits.NeuronWTA");
         Class d = Class.forName("SimpleClasses.ComputingUnits.Neuron");
-        distance = new Signal(d, countNeurons, 1, 1);
+        typeActivation.distance  = new Signal(d, countNeurons, 1, 1);
         output = new Signal(o, countNeurons, 1, 1);
         deltaOutput = new Signal(input.sizeZ, input.sizeX, input.sizeY);
         typeActivation.output = output;

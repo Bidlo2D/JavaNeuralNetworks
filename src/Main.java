@@ -43,8 +43,8 @@ public class Main {
         var flat = batch.FlatBatch();
         var x3Data = separateInput(flat,0,2);
         var x4Data = separateInput(flat,1,2);
-        chart.addSeries("X1", x1Data, x2Data);
-        chart.addSeries("X2", x3Data, x4Data);
+        var series1 = chart.addSeries("X1", x1Data, x2Data);
+        var series2 = chart.addSeries("X2", x3Data, x4Data);
         //chart.addSeries("X2", x2Data, x1Data);
         //chart.addSeries("X3", x1Data, x3Data);
         //var series2 = chart.addSeries("X2", x2Data, x1Data);
@@ -77,7 +77,7 @@ public class Main {
         // 3
         //net.AddLayer(layerC);
         // Settings
-        net.setEpoth(3200);
+        net.setEpoth(320);
         net.setLearnRate(0.0915);
         return net;
     }
@@ -168,7 +168,7 @@ public class Main {
         MiniBatch mini = new MiniBatch();
         Signal signal1 = new Signal(new double[]{0.97, 0.80});
         Signal signal2 = new Signal(new double[]{-0.97, -0.80});
-        Signal signal3 = new Signal(new double[]{-0.72, 0.70});
+        Signal signal3 = new Signal(new double[]{-0.5, 0.50});
         Signal signal4 = new Signal(new double[]{-0.67, 0.74});
         Signal signal5 = new Signal(new double[]{-0.80, 0.60});
         Signal signal6 = new Signal(new double[]{0.00, -1.00});
@@ -176,12 +176,12 @@ public class Main {
         Signal signal8 = new Signal(new double[]{-0.30, -0.95});
         mini.signals.add(signal1);
         mini.signals.add(signal2);
-        //mini.signals.add(signal3);
-        //mini.signals.add(signal4);
-        //mini.signals.add(signal5);
-        //mini.signals.add(signal6);
-        //mini.signals.add(signal7);
-        //mini.signals.add(signal8);
+        mini.signals.add(signal3);
+        mini.signals.add(signal4);
+        mini.signals.add(signal5);
+        mini.signals.add(signal6);
+        mini.signals.add(signal7);
+        mini.signals.add(signal8);
         data.miniBatches.add(mini);
 
         return data;
