@@ -1,5 +1,6 @@
 package Layers.FullyLayers;
 import Collector.Initializations.Generation;
+import Collector.Network;
 import Layers.Functions.Function;
 import Layers.Functions.Activation.Softmax;
 import Layers.Layer;
@@ -11,13 +12,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FCHLayer extends Layer {
-    protected Signal<NeuronFC> output;
+public class FCHLayer extends Layer<NeuronFC, Function> {
     protected Weight weights;
     protected Signal biases;
     protected Signal corrections;
     protected Signal deltaOutput;
-    public int countNeurons;
+    protected int countNeurons;
 
     public FCHLayer(int countNeurons, Function typeActivation){
         this.countNeurons = countNeurons;
@@ -51,7 +51,6 @@ public class FCHLayer extends Layer {
             {
                 Sum += input.getValueSignal(w2, 0, 0) * weights.getWeight(w1, w2);
             }
-
             output.setValueSignal(w1, 0, 0, Sum);
         }
         activation(output);
@@ -61,8 +60,9 @@ public class FCHLayer extends Layer {
     protected void activation(Signal activation) {
         for (int i = 0; i < activation.fullSize(); i++)
         {
-            double result = typeActivation.activation(activation.getSignal(i, 0, 0));
-            activation.setValueSignal(i, 0, 0, result);
+            var neuron = activation.getSignal(i, 0, 0);
+            double active = typeActivation.activation(neuron);
+            activation.setValueSignal(i, 0, 0, active);
         }
     }
 
@@ -73,23 +73,18 @@ public class FCHLayer extends Layer {
             double df = 0;
             for (int w2 = 0; w2 < weights.m; w2++)
             {
-                double derivative = typeActivation.derivative(input.getSignal(w2, 0, 0));
-                df += derivative * delta.getValueSignal(w1, 0, 0);
-                double gradient = (derivative * (weights.getWeight(w1, w2) * delta.getValueSignal(w1, 0, 0)));
-                deltaOutput.setValueSignal(w2, 0, 0, gradient + deltaOutput.getValueSignal(w2, 0, 0));
-                double GRADw = input.getValueSignal(w2, 0, 0) * delta.getValueSignal(w1, 0, 0);
-                double gradientNext = E * GRADw + A * corrections.getValueSignal(w1, 0, 0);
-                corrections.setValueSignal(w1, 0, 0, gradientNext);
-                weights.setWeight(w1, w2, weights.getWeight(w1, w2) + corrections.getValueSignal(w1, 0, 0));
+                double derivative = typeActivation.derivative(input.getSignal(w2, 0, 0)); // derivative
+                df += derivative * delta.getValueSignal(w1, 0, 0); // for bias this layer
+                double gradient = derivative * (weights.getWeight(w1, w2) * delta.getValueSignal(w1, 0, 0)); // for next layer
+                deltaOutput.setValueSignal(w2, 0, 0, gradient + deltaOutput.getValueSignal(w2, 0, 0)); // for next layer
+                double GRADw = input.getValueSignal(w2, 0, 0) * delta.getValueSignal(w1, 0, 0); // for this layer
+                double updateW = E * GRADw + A * corrections.getValueSignal(w1, 0, 0); // calculating the update of weight
+                corrections.setValueSignal(w1, 0, 0, updateW); // remember value update
+                weights.setWeight(w1, w2, weights.getWeight(w1, w2) + corrections.getValueSignal(w1, 0, 0)); // update weight
             }
-            biases.setValueSignal(w1, 0, 0, (df * E) + biases.getValueSignal(w1, 0, 0));
+            biases.setValueSignal(w1, 0, 0, (df * E) + biases.getValueSignal(w1, 0, 0)); // update bias
         }
         return deltaOutput;
-    }
-
-
-    public Signal backPropagation(Signal delta, double E, double A){
-        return null;
     }
 
     protected void initialization() throws ClassNotFoundException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {

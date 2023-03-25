@@ -9,11 +9,12 @@ public class FCCLayer extends FCHLayer {
     public FCCLayer(int countNeurons, Function typeActivation) {
         super(countNeurons, typeActivation);
     }
+
     @Override
     public Signal backPropagation(Signal delta, int right, double E, double A) {
-        // Подсчет ошибок.
+        // Подсчет ошибок
         Signal deltaOutput = errorCounting(right);
-        //Обновление весов
+        // Обновление весов
         return super.backPropagation(deltaOutput, right, E, A);
     }
 

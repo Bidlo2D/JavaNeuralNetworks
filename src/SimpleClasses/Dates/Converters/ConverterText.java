@@ -2,13 +2,10 @@ package SimpleClasses.Dates.Converters;
 
 import SimpleClasses.ComputingUnits.INeuron;
 import SimpleClasses.Dates.Converters.Enums.FormatText;
-import SimpleClasses.Dates.Converters.Enums.LanguageStemmer;
 import SimpleClasses.Dates.Converters.Enums.TokenType;
 import SimpleClasses.Dates.Converters.Exceptions.NoDirectoryException;
 import SimpleClasses.Dates.Converters.Other.Normalization;
 import SimpleClasses.Dates.Converters.Other.PorterStemmer.PorterStemmer;
-import SimpleClasses.Dates.Converters.Other.PorterStemmer.PorterStemmerEN;
-import SimpleClasses.Dates.Converters.Other.PorterStemmer.PorterStemmerRU;
 import SimpleClasses.Dates.Converters.Other.RangeNorm;
 import SimpleClasses.Dates.Converters.Representation.RepresentationText;
 import SimpleClasses.ComputingUnits.NeuronFC;
@@ -21,22 +18,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class ConverterText {
+public class ConverterText<L extends PorterStemmer> {
     public List<Signal> dates = new ArrayList();
     private int maxlen;
     private PorterStemmer porterStemmer;
     private TokenType type;
-    private LanguageStemmer language;
     private RangeNorm range;
-    private Class clazz;
 
-    public ConverterText(String pathDir, TokenType type, LanguageStemmer language, RangeNorm range, int maxlen) throws NoDirectoryException, ClassNotFoundException {
+    public ConverterText(String pathDir, TokenType type, PorterStemmer porterStemmer, RangeNorm range, int maxlen) throws NoDirectoryException, ClassNotFoundException {
         this.type = type;
         this.maxlen = maxlen;
-        this.language = language;
+        this.porterStemmer = porterStemmer;
         this.range = range;
-        //this.clazz = Class.forName("SimpleClasses.ComputingUnits.Neuron");
-        TypeStemmer();
         File dir = new File(pathDir);
         if (!dir.isDirectory()) {
             throw new NoDirectoryException("Путь не является директорией!");
@@ -48,17 +41,6 @@ public class ConverterText {
                 var result = padSignal(ReadText(files[b]));
                 dates.add(result);
             }
-        }
-    }
-
-    private void TypeStemmer(){
-        switch (language){
-            case EN:
-                porterStemmer = new PorterStemmerEN();
-                break;
-            case RU:
-                porterStemmer = new PorterStemmerRU();
-                break;
         }
     }
 

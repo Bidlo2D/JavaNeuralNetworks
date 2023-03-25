@@ -24,13 +24,13 @@ public class Network implements Serializable {
 
     public void setEpoth(int epoth) { this.epoth = epoth; }
     public int getEpoth () { return epoth; }
+    public void setLearnRate(double L_rate) { this.L_rate = L_rate; }
+    public void addLayer(Layer layer) { if(!NeuralNetwork.contains(layer)) { NeuralNetwork.add(layer); } }
+    public void removeLayer(Layer layer) { NeuralNetwork.remove(layer); }
     public Weight getWeightLayer(int index) {
         var WTA = (KohonenLayer) NeuralNetwork.get(index);
         return WTA.getWeight();
     }
-    public void setLearnRate(double L_rate) { this.L_rate = L_rate; }
-    public void addLayer(Layer layer) { if(!NeuralNetwork.contains(layer)) { NeuralNetwork.add(layer); } }
-    public void removeLayer(Layer layer) { NeuralNetwork.remove(layer); }
 
     public void Train(Batch input) throws ClassNotFoundException, InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchMethodException {
         iteration = 1;
@@ -63,7 +63,6 @@ public class Network implements Serializable {
         for(int l = 0; l < NeuralNetwork.size(); l++) {
             signal = NeuralNetwork.get(l).forward(signal);
         }
-
         return signal.getAnswer();
     }
 

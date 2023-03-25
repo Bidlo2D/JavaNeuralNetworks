@@ -21,7 +21,7 @@ public class PoolingLayer extends Layer {
     public Signal forward(Signal input) {
         this.input = input;
         if(mask == null ||
-           output == null){ Initialization(input); }
+           output == null){ initialization(input); }
         // проходимся по каждому из каналов
         for (int d = 0; d < input.sizeZ; d++) {
             for (int i = 0; i < input.sizeX; i += scale) {
@@ -79,7 +79,7 @@ public class PoolingLayer extends Layer {
     }
 
 
-    private void Initialization(Signal input) {
+    private void initialization(Signal input) {
         output = new Signal(input.sizeZ, input.sizeX / scale, input.sizeY / scale);
         mask = new Signal(input.sizeZ, input.sizeX, input.sizeY);
     }

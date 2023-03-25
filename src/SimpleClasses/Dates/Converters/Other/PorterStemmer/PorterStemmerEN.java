@@ -1,7 +1,5 @@
 package SimpleClasses.Dates.Converters.Other.PorterStemmer;
 
-import SimpleClasses.Dates.Converters.Enums.LanguageStemmer;
-
 import java.util.Locale;
 
 public class PorterStemmerEN implements PorterStemmer {

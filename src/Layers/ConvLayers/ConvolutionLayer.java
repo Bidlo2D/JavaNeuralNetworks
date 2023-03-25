@@ -32,7 +32,7 @@ public class ConvolutionLayer extends Layer {
            bias == null ||
            cores == null ||
            cBias == null ||
-           output == null) { Initialization(input); }
+           output == null) { initialization(input); }
 
         // проходимся по каждому из фильтров
         for (int f = 0; f < countCore; f++) {
@@ -165,7 +165,7 @@ public class ConvolutionLayer extends Layer {
         }
     }
 
-    public void Initialization(Signal input)
+    public void initialization(Signal input)
     {
         //#1
         channel = input.sizeZ;

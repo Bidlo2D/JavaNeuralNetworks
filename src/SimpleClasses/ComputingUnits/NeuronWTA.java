@@ -5,8 +5,6 @@ import java.io.Serializable;
 
 public class NeuronWTA extends Neuron implements Serializable {
 
-    private int totalWins;
-
     private int countWins;
 
     private int winRate = 35;
@@ -31,7 +29,7 @@ public class NeuronWTA extends Neuron implements Serializable {
         }
     }
 
-    public void win(){ countWins += 1; totalWins += 1; }
+    public void win(){ countWins += 1; }
 
     public NeuronWTA() {  }
     public NeuronWTA(double value, int winRate) { this.value = value; this.winRate =  winRate; }
