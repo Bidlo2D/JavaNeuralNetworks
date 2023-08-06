@@ -89,8 +89,11 @@ public class Signal<T extends INeuron> implements Serializable {
                neurons[i] = (T) clazz.getDeclaredConstructor().newInstance();
           }
      }
+
+
      // Constructors
      public Signal(){}
+
 
      public Signal(List<INeuron> list) {
           this.sizeZ = list.size();

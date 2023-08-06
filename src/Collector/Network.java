@@ -6,6 +6,7 @@ import SimpleClasses.Dates.Batch;
 import SimpleClasses.Signal;
 import SimpleClasses.Weight;
 
+import java.awt.print.Book;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -14,12 +15,12 @@ import java.util.Map;
 
 public class Network implements Serializable {
     private static final long serialVersionUID = 1L;
+    public static int iteration = 1;
     private double L_rate = 0.01;
     private final double A_rate = 0.85; // offset
     private int epoth = 10;
     private int currentEpoth;
     private List<Layer> NeuralNetwork = new ArrayList();
-    public static int iteration = 1;
     //private Weight graphInfo;
 
     public void setEpoth(int epoth) { this.epoth = epoth; }
@@ -45,7 +46,7 @@ public class Network implements Serializable {
             }
             long finish = System.currentTimeMillis();
             long elapsed = finish - start;
-            System.out.println("epoth - " + (currentEpoth + 1) + ", time - " + elapsed / 1000 + "c");
+            System.out.println("epoth - " + (currentEpoth + 1) + ", time - " + elapsed / 1000.0 + "c");
         }
     }
 
@@ -60,6 +61,7 @@ public class Network implements Serializable {
     }
 
     private Map<Integer, Double> ForwardLayers(Signal signal) throws ClassNotFoundException, InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchMethodException {
+
         for(int l = 0; l < NeuralNetwork.size(); l++) {
             signal = NeuralNetwork.get(l).forward(signal);
         }
